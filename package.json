@@ -20,7 +20,7 @@
     "type": "git",
     "url": "git+https://github.com/KevinHart04/TPFI.git"
   },
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/KevinHart04/TPFI/issues"
   },
