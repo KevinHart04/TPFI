@@ -47,31 +47,27 @@
         <!-- Formulario para enviar los datos -->
         <form class="form" method="GET">
         <table>
-            <tr>
-                <td><label for="email" class="form-label">Correo Electrónico</label></td>
-            </tr>
-            <tr>
+             <tr>
+                <td class="label-cell"><label for="email" class="form-label">Correo</label></td>
                 <td><input class="txt" name="email" id="email" type="email" placeholder="Ingrese su correo electrónico"></td>
             </tr>
             <tr>
-                <td><label for="password" class="form-label">Contraseña</label></td>
-            </tr>
-            <tr>
+                <td class="label-cell"><label for="password" class="form-label">Contraseña</label></td>
                 <td><input class="txt" name="password" id="password" type="password" placeholder="Ingrese su contraseña"></td>
             </tr>
-            <tr><td><span id="resultado1"></span></td></tr>
+            <tr><td colspan="2"><span id="resultado1"></span></td></tr>
             <tr>
-                <td class="links"><a href="#">¿Olvidaste tu contraseña?</a></td>
+                <td colspan="2" class="links"><a href="#">¿Olvidaste tu contraseña?</a></td>
             </tr>
             <tr>
-                <td class="links"><span>¿No tienes una cuenta? </span><a href="#">Regístrate</a></td>
+                <td colspan="2" class="links"><span>¿No tienes una cuenta? </span><a href="#">Regístrate</a></td>
             </tr>
             <tr>
-                <td class="terms">
+                <td colspan="2" class="terms">
                     <input name="termscondition" type="checkbox"> Acepto los términos y condiciones
                 </td>
             </tr>
-            <tr><td><span id="resultado2"></span></td></tr>
+            <tr><td colspan="2"><span id="resultado2"></span></td></tr>
         </table>
         <button type="submit"> < Ingresar</button> 
         </form>
