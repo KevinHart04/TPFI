@@ -10,10 +10,19 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1692.0",
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^5.1.0"
   },
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinHart04/TPFI.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KevinHart04/TPFI/issues"
+  },
+  "homepage": "https://github.com/KevinHart04/TPFI#readme"
 }
