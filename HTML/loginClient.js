@@ -97,13 +97,14 @@ formE1.addEventListener('submit', (event) => {
         // 6. Guardar los datos del usuario en sessionStorage
         // ---------------------------------------------------------------------
         const userSession = {
+          id: response.id, // 🔹 nuevo campo
           contacto: response.contacto,
           nombre: response.nombre,
           fecha_ultimo_ingreso: response.fecha_ultimo_ingreso,
           mode: MODE
-        };
+          };
 
-        sessionStorage.setItem('usuario', JSON.stringify(userSession));
+  sessionStorage.setItem('usuario', JSON.stringify(userSession));
 
         // Redirigir a la pantalla de tickets
         window.location.href = 'listarTicket.html';

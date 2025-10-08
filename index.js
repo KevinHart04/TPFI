@@ -19,6 +19,7 @@ import express from 'express';
 import cors from 'cors';
 import crypto from 'crypto';
 import AWS from 'aws-sdk';
+import chalk from 'chalk';
 
 import accessKeyId from '../accessKeyId.js';
 import secretAccessKey from '../secretAccessKey.js';
@@ -77,35 +78,43 @@ app.get('/api/cliente', (req, res) => {
  * POST /api/loginCliente
  * Autentica un cliente usando su correo (“contacto”) y contraseña.
  */
-app.post('/api/loginCliente', async (req, res) => {  const { contacto, password } = req.body;
+app.post('/api/loginCliente', async (req, res) => {
+  const { contacto, password } = req.body;
 
-console.log(`Intento de login: contacto(${contacto})`);
+  console.log(`Intento de login: contacto(${contacto})`);
 
-if (!contacto) return res.status(400).send({ response: "ERROR", message: "Contacto no informado" });
-if (!password) return res.status(400).send({ response: "ERROR", message: "Password no informada" });
+  if (!contacto) return res.status(400).send({ response: "ERROR", message: "Contacto no informado" });
+  if (!password) return res.status(400).send({ response: "ERROR", message: "Password no informada" });
 
-// scan para buscar por contacto
-const result = await docClient.scan({
+  // Buscar el cliente por su contacto
+  const result = await docClient.scan({
     TableName: "cliente",
     FilterExpression: 'contacto = :c',
     ExpressionAttributeValues: { ':c': contacto }
-}).promise();
+  }).promise();
 
-if (!result.Items.length) return res.status(400).send({ response:"ERROR", message:"Cliente no encontrado" });
+  if (!result.Items.length)
+    return res.status(400).send({ response: "ERROR", message: "Cliente no encontrado" });
 
-const cliente = result.Items[0];
+  const cliente = result.Items[0];
 
-if (cliente.password !== password) return res.status(400).send({ response:"ERROR", message:"Contraseña incorrecta" });
-if (!cliente.activo) return res.status(400).send({ response:"ERROR", message:"Cliente inactivo" });
+  if (cliente.password !== password)
+    return res.status(400).send({ response: "ERROR", message: "Contraseña incorrecta" });
+  if (!cliente.activo)
+    return res.status(400).send({ response: "ERROR", message: "Cliente inactivo" });
 
-console.log(`✅ Login exitoso: ${contacto}`);
-res.status(200).send({
+  console.log(`✅ Login exitoso: ${contacto}`);
+
+  // 🔹 devolvemos también el id del cliente
+  res.status(200).send({
     response: "OK",
+    id: cliente.id, // 🔹 lo incluimos acá
     contacto: cliente.contacto,
     nombre: cliente.nombre,
     fecha_ultimo_ingreso: cliente.fecha_ultimo_ingreso
+  });
 });
-});
+
 
 //---------------------------------[ Utilidad: Escaneo DB de clientes por contacto ]---------------
 
@@ -253,13 +262,44 @@ async function scanDbTicket(contacto) {
  * Devuelve todos los tickets de un cliente (por correo).
  */
 app.post('/api/listarTicket', async (req, res) => {
-  const { contacto } = req.body;
-  if (!contacto) return res.status(400).send({ response: "ERROR", message: "Contacto no informado" });
+  try {
+    // 🔹 Antes recibíamos "contacto", ahora recibimos "id_cliente"
+    const { id_cliente } = req.body;
 
-  const tickets = await scanDbTicket(contacto);
-  if (!tickets.length) return res.status(400).send({ response: "ERROR", message: "El cliente no tiene tickets" });
+    // Validación de entrada
+    if (!id_cliente) {
+      return res.status(400).send({
+        response: "ERROR",
+        message: "ID de cliente no informado"
+      });
+    }
 
-  res.status(200).send({ response: "OK", data: tickets });
+    console.log(`📩 Buscando tickets del cliente con ID: ${id_cliente}`);
+
+    // 🔹 Llamamos a la función que obtiene los tickets (debe buscar por ID ahora)
+    const tickets = await scanDbTicket(id_cliente);
+
+    // Validar si el cliente tiene tickets asociados
+    if (!tickets.length) {
+      return res.status(404).send({
+        response: "ERROR",
+        message: "El cliente no tiene tickets"
+      });
+    }
+
+    // Enviar los tickets al frontend
+    res.status(200).send({
+      response: "OK",
+      data: tickets
+    });
+
+  } catch (error) {
+    console.error("❌ Error en /api/listarTicket:", error);
+    res.status(500).send({
+      response: "ERROR",
+      message: "Error interno del servidor"
+    });
+  }
 });
 
 /**

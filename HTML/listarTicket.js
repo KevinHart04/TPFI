@@ -1,23 +1,16 @@
 /**********************************************************************************************
- * listarTicket.js — versión segura
+ * listarTicket.js — versión con búsqueda por ID de cliente
  * ---------------------------------------------------------------------------------------------
  * UADER - FCyT - Ingeniería de Software I
  * Caso de estudio: Mesa de Ayuda
  *
  * Adaptación 2025:
- * - Reemplaza lectura desde URL por uso de sessionStorage.
- * - Evita exposición de información sensible en la barra de direcciones.
- * - Código ordenado y documentado paso a paso.
+ * - Ahora busca tickets usando el ID del cliente (más seguro y confiable).
+ * - Mantiene uso de sessionStorage para no exponer datos en la URL.
  **********************************************************************************************/
 
 /*---------------------------------------------------------------------------------------------
     1️⃣  Recuperar datos del usuario autenticado desde sessionStorage
-    -------------------------------------------------------------------------------------------
-    En el loginClient.js, cuando el usuario se autentica correctamente, guardamos:
-        sessionStorage.setItem("contacto", contacto);
-        sessionStorage.setItem("nombre", nombre);
-        sessionStorage.setItem("fecha_ultimo_ingreso", fecha);
-    Esto permite acceder a los datos sin pasarlos por la URL.
 ---------------------------------------------------------------------------------------------*/
 
 const usuario = JSON.parse(sessionStorage.getItem("usuario") || "{}");
@@ -27,8 +20,11 @@ const contacto = usuario.contacto;
 const nombre = usuario.nombre;
 const fecha_ultimo_ingreso = usuario.fecha_ultimo_ingreso;
 
+/* 🔹 NUEVO: agregamos el ID del usuario */
+const id_cliente = usuario.id; // ✅ ID del cliente (debe haberse guardado al hacer login)
+
 // Validar si hay sesión activa
-if (!contacto || !nombre) {
+if (!contacto || !nombre || !id_cliente) {
   alert("Debe iniciar sesión primero.");
   window.location.href = "loginClient.html";
 }
@@ -46,6 +42,7 @@ const ul = document.createElement("ul");
 ---------------------------------------------------------------------------------------------*/
 tituloUsuario.innerHTML = `
   <strong>Usuario:</strong> ${nombre} (${contacto})<br>
+  <strong>ID Cliente:</strong> ${id_cliente}<br> <!-- 🔹 NUEVO: mostramos el ID -->
   <strong>Último ingreso:</strong> ${fecha_ultimo_ingreso}
 `;
 
@@ -62,8 +59,8 @@ const RESTAPI = {
 
 async function obtenerTickets() {
   try {
-    // Se prepara la solicitud al backend con el contacto almacenado
-    const body = { contacto: contacto };
+    /* 🔹 MODIFICADO: ahora enviamos el id_cliente al backend */
+    const body = { id_cliente: id_cliente };
 
     const options = {
       method: "POST",
@@ -73,23 +70,21 @@ async function obtenerTickets() {
       body: JSON.stringify(body),
     };
 
-    console.log("📡 Solicitando tickets de:", contacto);
+    console.log("📡 Solicitando tickets del cliente con ID:", id_cliente);
 
-    // Se hace la llamada a la API REST
     const res = await fetch(RESTAPI.listarTicket, options);
     const data = await res.json();
 
-    // Validamos respuesta
     if (data.response !== "OK") {
       HTMLResponse.innerHTML = `<p style="color:red;">${data.message || "Error al obtener tickets"}</p>`;
       return;
     }
 
-    // Si hay tickets, se construye la lista en el DOM
+    // Mostrar tickets en el DOM
     data.data.forEach((ticket) => {
       const li = document.createElement("li");
       li.innerHTML = `
-        <strong>ID:</strong> ${ticket.id}<br>
+        <strong>ID Ticket:</strong> ${ticket.id}<br>
         <strong>Descripción:</strong> ${ticket.descripcion}<br>
         <strong>Solución:</strong> ${ticket.solucion}<br>
         <strong>Fecha apertura:</strong> ${ticket.fecha_apertura}<br>
@@ -113,8 +108,6 @@ window.addEventListener("DOMContentLoaded", obtenerTickets);
 
 /*---------------------------------------------------------------------------------------------
     7️⃣  (Opcional) Botón de cierre de sesión
-    -------------------------------------------------------------------------------------------
-    Permite al usuario salir y limpiar la sesión sin exponer datos.
 ---------------------------------------------------------------------------------------------*/
 const logoutBtn = document.querySelector("#logout");
 if (logoutBtn) {
