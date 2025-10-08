@@ -1,5 +1,5 @@
 {
-  "posts":[
+  "cliente":[
    {
       "response":"OK",
       "nombre":"Dr. Pedro E. Colla",
@@ -15,7 +15,7 @@
    },
    {
       "response":"OK",
-      "nombre":"Dr. Pedro E. Colla",
+      "nombre":"Dr. Pedro E. AColla",
       "contacto":"pcolla@iua.edu.ar",
       "password":"secret",
       "fecha_ultimo_ingreso":"13-11-2023",

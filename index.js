@@ -1,650 +1,362 @@
+/*************************************************************************************************
+ * index.js — API REST “Mesa de Ayuda”
+ * ------------------------------------------------------------------------------------------------
+ * UADER - FCyT - Ingeniería de Software I
+ * Caso de estudio: Mesa de Ayuda
+ *
+ * Adaptación 2025:
+ * - Se reemplaza “id” por “contacto” (correo electrónico) como identificador de cliente.
+ * - Se eliminan logs con contraseñas (riesgo crítico).
+ * - Se estructura y documenta todo el código por secciones.
+ * 
+ * Autor original: Dr. Pedro E. Colla
+ * Adaptación segura: Kevin + ChatGPT
+ *************************************************************************************************/
 
-/*-----------------------------------------------------------------------------------------------------------------
-//*  MesaAyuda.js debe copiarse al directorio del proyecto express como index.js
-//*
-//*  REST API 
-//*  UADER - FCyT - Ingenieria de Software I 
-//*  Caso de estudio MesaAyuda
-//*
-//*  Dr. Pedro E. Colla 2023,2025
- *----------------------------------------------------------------------------------------------------------------*/
-//AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1
+//---------------------------------[ Dependencias principales ]-----------------------------------
 
 import express from 'express';
-import crypto from 'crypto';
-console.log("Comenzando servidor");
-
-// const crypto = require('crypto');
-console.log("crypto Ok!");
-
-//const express = require('express');
-//console.log("express Ok!");
-
-const app = express();
-console.log("express ready!");
-
-const PORT = 8080;
-
 import cors from 'cors';
-
-//const cors = require('cors');
-console.log("cors ok!");
-
-app.use(cors());
-console.log("CORS ready!");
-
-import AWS from 'aws-sdk'
-//var AWS = require('aws-sdk');
-console.log("aws-sdk ready!");
-
-/*----
-Acquire critical security resources from an external file out of the path
-*/
-
-//const accessKeyId = require('../accessKeyId.js');
-//const secretAccessKey = require('../secretAccessKey.js');
+import crypto from 'crypto';
+import AWS from 'aws-sdk';
 
 import accessKeyId from '../accessKeyId.js';
-import secretAccessKey  from '../secretAccessKey.js';
+import secretAccessKey from '../secretAccessKey.js';
 
-let awsConfig = {
-    "region"         : "us-east-1",
-    "endpoint"       : "http://dynamodb.us-east-1.amazonaws.com",
-    "accessKeyId"    : accessKeyId, 
-    "secretAccessKey": secretAccessKey
+console.log("🚀 Iniciando servidor Mesa de Ayuda...");
+
+//---------------------------------[ Configuración de AWS DynamoDB ]------------------------------
+
+const awsConfig = {
+  region: "us-east-1",
+  endpoint: "http://dynamodb.us-east-1.amazonaws.com",
+  accessKeyId: accessKeyId,
+  secretAccessKey: secretAccessKey,
 };
 
 AWS.config.update(awsConfig);
-console.log("Servidor listo!");
-let docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient();
 
-/*----
-   Application server in LISTEN mode
-*/
+console.log("✅ AWS DynamoDB configurado correctamente.");
 
-app.listen(
-    PORT,
-    () => console.log(`Servidor listo en http://localhost:${PORT}`)
-);
+//---------------------------------[ Configuración de Express ]-----------------------------------
 
+const app = express();
+const PORT = 8080;
+
+app.use(cors());
 app.use(express.json());
 
-/*-------------------------------------------------------------------------------------------
-                            Funciones y Servicios
- *-------------------------------------------------------------------------------------------*/
+app.listen(PORT, () => {
+  console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
+});
 
-/*-----------
-función para hacer el parse de un archivo JSON
-*/
-function jsonParser(keyValue,stringValue) {
-    var string = JSON.stringify(stringValue);
-    var objectValue = JSON.parse(string);
-    return objectValue[keyValue];
+//---------------------------------[ Función auxiliar ]-------------------------------------------
+
+/**
+ * Extrae una propiedad de un objeto dentro de un JSON anidado.
+ * @param {string} keyValue - clave a buscar.
+ * @param {Object} stringValue - objeto JSON.
+ */
+function jsonParser(keyValue, stringValue) {
+  return JSON.parse(JSON.stringify(stringValue))[keyValue];
 }
 
-/*-------------------------------------------------------------------------------------------
-                            SERVER API 
- *-------------------------------------------------------------------------------------------*/
-/*==*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
- *                       API REST Cliente                                                   *
- *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*==*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
+//---------------------------------[ API REST: Cliente ]------------------------------------------
 
-app.get('/api/cliente', (req,res) => {
-    res.status(200).send({response : "OK", message : "API Ready"});
-    console.log("API cliente: OK");
+/**
+ * GET /api/cliente
+ * Verifica que el API esté disponible.
+ */
+app.get('/api/cliente', (req, res) => {
+  res.status(200).send({ response: "OK", message: "API Cliente disponible" });
+  console.log("🟢 API Cliente: OK");
 });
 
+/**
+ * POST /api/loginCliente
+ * Autentica un cliente usando su correo (“contacto”) y contraseña.
+ */
+app.post('/api/loginCliente', async (req, res) => {  const { contacto, password } = req.body;
 
-/*---
-  /api/loginCliente
-  Esta API permite acceder a un cliente por ID y comparar la password pasada en un JSON en el cuerpo con la indicada en el DB
-*/  
-app.post('/api/loginCliente', (req,res) => {
+console.log(`Intento de login: contacto(${contacto})`);
 
-    const { id } = req.body;
-    const {password} = req.body;
+if (!contacto) return res.status(400).send({ response: "ERROR", message: "Contacto no informado" });
+if (!password) return res.status(400).send({ response: "ERROR", message: "Password no informada" });
 
-    console.log("loginCliente: id("+id+") password ("+password+")");
+// scan para buscar por contacto
+const result = await docClient.scan({
+    TableName: "cliente",
+    FilterExpression: 'contacto = :c',
+    ExpressionAttributeValues: { ':c': contacto }
+}).promise();
 
-    if (!password) {
-        res.status(400).send({response : "ERROR" , message : "Password no informada"});
-        return;
-    }    
-    if (!id) {
-        res.status(400).send({response : "ERROR" , message : "id no informado"});
-        return;
-    }    
+if (!result.Items.length) return res.status(400).send({ response:"ERROR", message:"Cliente no encontrado" });
 
-    let getClienteByKey = function () {
-        var params = {
-            TableName: "cliente",
-            Key: {
-                "id" : id
-            }
-        };
-        docClient.get(params, function (err, data) {
-            if (err) {
-                res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+err}));
-            }
-            else {
-                if (Object.keys(data).length == 0) {
-                    res.status(400).send({response : "ERROR" , message : "Cliente invalido"});
-                } else {
-                    const paswd=jsonParser('password',data.Item);
-                    const activo=jsonParser('activo',data.Item);
-                    const id=jsonParser('id',data.Item);
-                    const contacto=jsonParser('contacto',data.Item);
-                    if (password == paswd) {
-                        if (activo == true) {
-                            const nombre=jsonParser('nombre',data.Item);
-                            const fecha_ultimo_ingreso=jsonParser('fecha_ultimo_ingreso',data.Item);
-                            res.status(200).send(JSON.stringify({response : "OK", "id" : id, "nombre" : nombre, "contacto" : contacto, "fecha_ultimo_ingreso": fecha_ultimo_ingreso}));    
-                        } else {
-                            res.status(400).send(JSON.stringify({response : "ERROR", message : "Cliente no activo"}));    
-                        }
-                    } else {
-                        res.status(400).send(JSON.stringify({response : "ERROR" , message : "usuario incorrecto"}));
-                    }    
-            }    
-            }
-        })
-    }
-    getClienteByKey();
+const cliente = result.Items[0];
 
+if (cliente.password !== password) return res.status(400).send({ response:"ERROR", message:"Contraseña incorrecta" });
+if (!cliente.activo) return res.status(400).send({ response:"ERROR", message:"Cliente inactivo" });
+
+console.log(`✅ Login exitoso: ${contacto}`);
+res.status(200).send({
+    response: "OK",
+    contacto: cliente.contacto,
+    nombre: cliente.nombre,
+    fecha_ultimo_ingreso: cliente.fecha_ultimo_ingreso
+});
 });
 
+//---------------------------------[ Utilidad: Escaneo DB de clientes por contacto ]---------------
 
-/*-----------
-  /api/getCliente
-  Esta API permite acceder a un cliente dado su id
-*/
-
-app.post('/api/getCliente/:id', (req,res) => {
-    const { id } = req.params;
-    console.log("getCliente: id("+id+")");
-    var params = {
-        TableName: "cliente",
-        Key: {
-            "id" : id
-            //test use "id": "0533a95d-7eef-4c6b-b753-1a41c9d1fbd0"   
-             }
-        };
-    docClient.get(params, function (err, data) {
-        if (err)  {
-            res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+ null}));
-        } else {
-
-            if (Object.keys(data).length != 0) {
-               res.status(200).send(JSON.stringify({"response":"OK","cliente" : data.Item}),null,2);
-            } else {
-               res.status(400).send(JSON.stringify({"response":"ERROR",message : "Cliente no existe"}),null,2);
-            }
-        }    
-    })
-
-
-} );
-
-/*---------
-Función para realizar el SCAN de un DB de cliente usando contacto como clave para la búsqueda (no es clave formal del DB)
-*/
 async function scanDb(contacto) {
-    var docClient = new AWS.DynamoDB.DocumentClient();
-    const scanKey=contacto;
-    const paramsScan = { // ScanInput
-      TableName: "cliente", // required
-      Select: "ALL_ATTRIBUTES" || "ALL_PROJECTED_ATTRIBUTES" || "SPECIFIC_ATTRIBUTES" || "COUNT",
-      FilterExpression : 'id = :contacto',
-      ExpressionAttributeValues : {':contacto' : scanKey}
-    };      
-    var objectPromise = await docClient.scan(paramsScan).promise().then((data) => {
-          return data.Items 
-    });  
-    return objectPromise;
+  const params = {
+    TableName: "cliente",
+    FilterExpression: 'contacto = :contacto',
+    ExpressionAttributeValues: { ':contacto': contacto }
+  };
+
+  const result = await docClient.scan(params).promise();
+  return result.Items;
 }
 
-/*----
-addCliente
-Revisa si el contacto (e-mail) existe y en caso que no da de alta el cliente generando un id al azar
-*/
-app.post('/api/addCliente', (req,res) => {
+/**
+ * POST /api/addCliente
+ * Crea un nuevo cliente (correo único como identificador).
+ */
+app.post('/api/addCliente', async (req, res) => {
+  const { contacto, password, nombre } = req.body;
 
-    const {contacto} = req.body;
-    const {password} = req.body;
-    const {nombre}   = req.body;
-    console.log("addCliente: contacto("+contacto+") nombre("+nombre+") password("+password+")");
-    
-    if (!password) {
-        res.status(400).send({response : "ERROR" , message: "Password no informada"});
-        return;
+  console.log(`Alta de nuevo cliente: ${contacto}`);
+
+  if (!contacto || !password || !nombre) {
+    return res.status(400).send({ response: "ERROR", message: "Datos incompletos" });
+  }
+
+  const exists = await scanDb(contacto);
+  if (exists.length > 0) {
+    return res.status(400).send({ response: "ERROR", message: "Cliente ya existe" });
+  }
+
+  const fecha = new Date().toLocaleDateString('es-AR');
+
+  const newCliente = {
+    contacto,
+    nombre,
+    password,
+    activo: true,
+    registrado: true,
+    primer_ingreso: false,
+    fecha_alta: fecha,
+    fecha_cambio_password: fecha,
+    fecha_ultimo_ingreso: fecha
+  };
+
+  const params = {
+    TableName: "cliente",
+    Item: newCliente,
+    ConditionExpression: 'attribute_not_exists(contacto)',
+  };
+
+  docClient.put(params, (err) => {
+    if (err) {
+      res.status(400).send({ response: "ERROR", message: "Error al crear cliente: " + err });
+    } else {
+      res.status(200).send({ response: "OK", cliente: newCliente });
     }
-    if (!nombre) {
-        res.status(400).send({response : "ERROR", message : "Nombre no informado"});
-        return;
-    }
-
-    if (!contacto){
-        res.status(400).send({response : "ERROR" , message : "Contacto no informado"});
-        return;
-    } 
-
-    scanDb(contacto)
-    .then(resultDb => {
-      if (Object.keys(resultDb).length != 0) {
-        res.status(400).send({response : "ERROR" , message : "Cliente ya existe"});
-        return;
-      } else {
-        var hoy = new Date();
-        var dd = String(hoy.getDate()).padStart(2, '0');
-        var mm = String(hoy.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = hoy.getFullYear();
-        hoy = dd + '/' + mm + '/' + yyyy;
-    
-        const newCliente = {
-         id                    : contacto,
-         nombre                : nombre,
-         password              : password,
-         activo                : true,
-         registrado            : true,
-         primer_ingreso        : false,
-         fecha_alta            : hoy,
-         fecha_cambio_password : hoy,
-         fecha_ultimo_ingreso  : hoy,
-        };
-    
-        const paramsPut = {
-          TableName: "cliente",
-          Item: newCliente,
-          ConditionExpression:'attribute_not_exists(id)',
-        };
-
-        docClient.put(paramsPut, function (err, data) {
-            if (err) {
-                res.status(400).send(JSON.stringify({response : "ERROR", message : "DB error" + err}));
-            } else {
-                res.status(200).send(JSON.stringify({response : "OK", "cliente": newCliente}));
-            }
-        });
-    }
-    });
-
+  });
 });
-/*----------
-/api/updateCliente
-Permite actualizar datos del cliente contacto, nombre, estado de activo y registrado
-*/
-app.post('/api/updateCliente', (req,res) => {
-    
-    const {id} = req.body;
-    const {nombre}   = req.body; 
-    const {password} = req.body;
 
-    var activo = ((req.body.activo+'').toLowerCase() === 'true')
-    var registrado = ((req.body.registrado+'').toLowerCase() === 'true')
+/**
+ * POST /api/updateCliente
+ * Actualiza nombre, password, activo o registrado de un cliente.
+ */
+app.post('/api/updateCliente', (req, res) => {
+  const { contacto, nombre, password, activo, registrado } = req.body;
 
-    console.log("updateCliente: id("+id+") nombre("+nombre+") password("+password+") activo("+activo+") registrado("+registrado+")");
+  console.log(`Actualizando cliente: ${contacto}`);
 
-    if (!id) {
-        res.status(400).send({response : "ERROR" , message: "Id no informada"});
-        return;
-    }
+  if (!contacto || !nombre || !password)
+    return res.status(400).send({ response: "ERROR", message: "Faltan datos obligatorios" });
 
-    if (!nombre) {
-        res.status(400).send({response : "ERROR" , message: "Nombre no informado"});
-        return;
-    }
+  const params = {
+    TableName: "cliente",
+    Key: { contacto },
+    UpdateExpression: "SET #n = :n, #p = :p, #a = :a, #r = :r",
+    ExpressionAttributeNames: {
+      "#n": "nombre",
+      "#p": "password",
+      "#a": "activo",
+      "#r": "registrado"
+    },
+    ExpressionAttributeValues: {
+      ":n": nombre,
+      ":p": password,
+      ":a": activo === true,
+      ":r": registrado === true
+    },
+    ReturnValues: "ALL_NEW"
+  };
 
-    if (!password) {
-        res.status(400).send({response : "ERROR" , message: "Password no informado"});
-        return;
-    }
+  docClient.update(params, (err, data) => {
+    if (err)
+      return res.status(400).send({ response: "ERROR", message: "Error al actualizar: " + err });
 
-    var params = {
-        TableName: "cliente",
-        Key: {
-            "id" : id
-            //test use "id": "0533a95d-7eef-4c6b-b753-1a41c9d1fbd0"   
-             }
-        };
-        
-    docClient.get(params, function (err, data) {
-        if (err)  {
-            res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+ null}));
-            return;
-        } else {
-
-            if (Object.keys(data).length == 0) {
-                res.status(400).send(JSON.stringify({"response":"ERROR",message : "Cliente no existe"}),null,2);
-                return;
-            } else {
-
-                const paramsUpdate = { 
-   
-                    ExpressionAttributeNames: { 
-                         "#a": "activo", 
-                         "#n": "nombre",
-                         "#p": "password",
-                         "#r": "registrado"
-
-                    }, 
-                    ExpressionAttributeValues: { 
-                        ":a": activo , 
-                        ":p": password,
-                        ":n": nombre , 
-                        ":r": registrado 
-                   }, 
-                   Key: { 
-                       "id": id 
-                   }, 
-                   ReturnValues: "ALL_NEW", 
-                   TableName: "cliente", 
-                   UpdateExpression: "SET #n = :n, #p = :p, #a = :a, #r = :r" 
-                };
-                docClient.update(paramsUpdate, function (err, data) {
-                    if (err)  {
-                        res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+err}));
-                        return;
-                    } else {
-                        res.status(200).send(JSON.stringify({response : "OK", message : "updated" , "data": data}));
-                    }    
-                });    
-            }
-        }    
-    })
-
-
+    res.status(200).send({ response: "OK", cliente: data.Attributes });
+  });
 });
-/*-------
-/api/resetCliente
-Permite cambiar la password de un cliente
-*/
-app.post('/api/resetCliente', (req,res) => {
-    
-    const {id}       = req.body;
-    const {password} = req.body;
- 
-    if (!id) {
-        res.status(400).send({response : "ERROR" , message: "Id no informada"});
-        return;
-    }
 
-    if (!password) {
-        res.status(400).send({response : "ERROR" , message: "Password no informada"});
-        return;
-    }
+/**
+ * POST /api/resetCliente
+ * Cambia la contraseña de un cliente (identificado por contacto).
+ */
+app.post('/api/resetCliente', (req, res) => {
+  const { contacto, password } = req.body;
+  if (!contacto || !password)
+    return res.status(400).send({ response: "ERROR", message: "Datos incompletos" });
 
-    var params = {
-        TableName: "cliente",
-        Key: {
-            "id" : id
-            //test use "id": "0533a95d-7eef-4c6b-b753-1a41c9d1fbd0"   
-             }
-        };
-        
-    docClient.get(params, function (err, data) {
-        if (err)  {
-            res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+ null}));
-            return;
-        } else {
+  const params = {
+    TableName: "cliente",
+    Key: { contacto },
+    UpdateExpression: "SET #p = :p",
+    ExpressionAttributeNames: { "#p": "password" },
+    ExpressionAttributeValues: { ":p": password },
+    ReturnValues: "ALL_NEW"
+  };
 
-            if (Object.keys(data).length == 0) {
-                res.status(400).send(JSON.stringify({"response":"ERROR",message : "Cliente no existe"}),null,2);
-                return;
-            } else {
+  docClient.update(params, (err, data) => {
+    if (err)
+      return res.status(400).send({ response: "ERROR", message: "Error DB: " + err });
 
-                const paramsUpdate = { 
-   
-                    ExpressionAttributeNames: { 
-                         "#p": "password" 
-                    }, 
-                    ExpressionAttributeValues: { 
-                        ":p": password 
-                   }, 
-                   Key: { 
-                       "id": id 
-                   }, 
-                   ReturnValues: "ALL_NEW", 
-                   TableName: "cliente", 
-                   UpdateExpression: "SET #p = :p" 
-                };
-                docClient.update(paramsUpdate, function (err, data) {
-                    if (err)  {
-                        res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+err}));
-                        return;
-                    } else {
-                        res.status(200).send(JSON.stringify({response : "OK", message : "updated" , "data": data}));
-                    }    
-                });    
-            }
-        }    
-    })
+    res.status(200).send({ response: "OK", message: "Password actualizada", cliente: data.Attributes });
+  });
 });
-/*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-/*                                                       API REST ticket                                                             *
-/*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
 
-/*---------
-Función para realizar el SCAN de un DB de cliente usando contacto como clave para la búsqueda (no es clave formal del DB)
-*/
-async function scanDbTicket(clienteID) {
-    var docClient = new AWS.DynamoDB.DocumentClient();
-    const scanKey=clienteID;
-    const paramsScan = { // ScanInput
-      TableName: "ticket", // required
-      Select: "ALL_ATTRIBUTES" || "ALL_PROJECTED_ATTRIBUTES" || "SPECIFIC_ATTRIBUTES" || "COUNT",
-      FilterExpression : 'clienteID = :clienteID',
-      ExpressionAttributeValues : {':clienteID' : scanKey}
-    };      
-    var objectPromise = await docClient.scan(paramsScan).promise().then((data) => {
-          return data.Items 
-    });  
-    return objectPromise;
+//---------------------------------[ API REST: Tickets ]------------------------------------------
+
+/**
+ * Escanea todos los tickets de un cliente dado su correo.
+ */
+async function scanDbTicket(contacto) {
+  const params = {
+    TableName: "ticket",
+    FilterExpression: 'clienteID = :c',
+    ExpressionAttributeValues: { ':c': contacto }
+  };
+
+  const result = await docClient.scan(params).promise();
+  return result.Items;
 }
-/*----------
-  listarTicket
-  API REST para obtener todos los tickets de un clienteID
-*/  
-app.post('/api/listarTicket', (req,res) => {
 
-    const {ID}  = req.body;
-    console.log("listarTicket: ID("+ID+")");
- 
-    if (!ID) {
-        res.status(400).send({response : "ERROR" , message: "ID cliente  no informada"});
-        return;
-    }
+/**
+ * POST /api/listarTicket
+ * Devuelve todos los tickets de un cliente (por correo).
+ */
+app.post('/api/listarTicket', async (req, res) => {
+  const { contacto } = req.body;
+  if (!contacto) return res.status(400).send({ response: "ERROR", message: "Contacto no informado" });
 
-    scanDbTicket(ID)
-    .then(resultDb => {
-      if (Object.keys(resultDb).length == 0) {
-        res.status(400).send({response : "ERROR" , message : "clienteID no tiene tickets"});
-        return;
-      } else {
-        res.status(200).send(JSON.stringify({response : "OK",  "data": resultDb}));
-    }
+  const tickets = await scanDbTicket(contacto);
+  if (!tickets.length) return res.status(400).send({ response: "ERROR", message: "El cliente no tiene tickets" });
 
-    });
-
+  res.status(200).send({ response: "OK", data: tickets });
 });
 
-/*---------
-  getTicket
-  API REST para obtener los detalles de un ticket
-*/
-app.post('/api/getTicket', (req,res) => {
-    const {id}  = req.body;
-    console.log("getTicket: id("+id+")");
- 
-    if (!id) {
-        res.status(400).send({response : "ERROR" , message: "ticket id no informada"});
-        return;
-    }
-    var params = {
-        TableName: "ticket",
-        Key: {
-            "id" : id
-            //"clienteID": "0533a95d-7eef-4c6b-b753-1a41c9d1fbd0"   
-            //"id"       : "e08905a8-4aab-45bf-9948-4ba2b8602ced"
-        }
-    };
-    docClient.get(params, function (err, data) {
-        if (err) {
-            res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+err}));
-        }
-        else {
-            if (Object.keys(data).length == 0) {
-                res.status(400).send({response : "ERROR" , message : "ticket invalido"});
-            } else {
-                res.status(200).send(JSON.stringify({response : "OK", "data" : data}));    
-            }    
-        }
-    })
+/**
+ * POST /api/addTicket
+ * Crea un nuevo ticket para un cliente.
+ */
+app.post('/api/addTicket', (req, res) => {
+  const { contacto, descripcion, solucion } = req.body;
+  const fecha = new Date().toLocaleDateString('es-AR');
+
+  const newTicket = {
+    id: crypto.randomUUID(),
+    clienteID: contacto,
+    estado_solucion: 1,
+    descripcion,
+    solucion,
+    fecha_apertura: fecha,
+    ultimo_contacto: fecha
+  };
+
+  const params = {
+    TableName: "ticket",
+    Item: newTicket,
+    ConditionExpression: 'attribute_not_exists(id)',
+  };
+
+  docClient.put(params, (err) => {
+    if (err)
+      return res.status(400).send({ response: "ERROR", message: "Error al crear ticket: " + err });
+
+    res.status(200).send({ response: "OK", ticket: newTicket });
+  });
 });
 
-/*-----------------
-/api/addTicket
-API REST para agregar ticket (genera id)
-*/
-app.post('/api/addTicket', (req,res) => {
+/**
+ * POST /api/getTicket
+ * Devuelve los detalles de un ticket específico.
+ */
+app.post('/api/getTicket', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).send({ response: "ERROR", message: "ID de ticket no informado" });
 
-    const {clienteID} = req.body;
-    const estado_solucion = 1;
-    const {solucion} = req.body;
-    const {descripcion} = req.body;
+  const params = { TableName: "ticket", Key: { id } };
 
-    var hoy = new Date();
-    var dd = String(hoy.getDate()).padStart(2, '0');
-    var mm = String(hoy.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = hoy.getFullYear();
-    hoy = dd + '/' + mm + '/' + yyyy;
+  docClient.get(params, (err, data) => {
+    if (err) return res.status(400).send({ response: "ERROR", message: "Error DB: " + err });
+    if (!data.Item) return res.status(400).send({ response: "ERROR", message: "Ticket no encontrado" });
 
-    const newTicket = {
-     id                    : crypto.randomUUID(),
-     clienteID             : clienteID,
-     estado_solucion       : estado_solucion,
-     solucion              : solucion,
-     descripcion           : descripcion,
-     fecha_apertura        : hoy,
-     ultimo_contacto       : hoy
-    };
-
-    const paramsPut = {
-      TableName: "ticket",
-      Item: newTicket,
-      ConditionExpression:'attribute_not_exists(id)',
-    };
-
-    docClient.put(paramsPut, function (err, data) {
-        if (err) {
-            res.status(400).send(JSON.stringify({response : "ERROR", message : "DB error" + err}));
-        } else {
-            res.status(200).send(JSON.stringify({response : "OK", "ticket": newTicket}));
-        }
-    });
-}
-)
-
-/*--------
-/api/updateTicket
-Dado un id actualiza el ticket, debe informarse la totalidad del ticket excepto ultimo_contacto
-*/
-app.post('/api/updateTicket', (req,res) => {
-
-    const {id} = req.body;
-    const {clienteID} = req.body;
-    const {estado_solucion} = req.body;
-    const {solucion} = req.body;
-    const {descripcion} = req.body;
-    const {fecha_apertura} = req.body;
-
-    if (!id) {
-        res.status(400).send({response : "ERROR" , message: "Id no informada"});
-        return;
-    }
-
-    if (!clienteID) {
-        res.status(400).send({response : "ERROR" , message: "clienteID no informada"});
-        return;
-    }
-
-    if (!estado_solucion) {
-        res.status(400).send({response : "ERROR" , message: "estado_solucion no informada"});
-        return;
-    }
-
-    if (!solucion) {
-        res.status(400).send({response : "ERROR" , message: "solucion no informado"});
-        return;
-    }
-
-    if (!fecha_apertura) {
-        res.status(400).send({response : "ERROR" , message: "fecha apertura"});
-        return;
-    }
-    
-    var hoy = new Date();
-    var dd = String(hoy.getDate()).padStart(2, '0');
-    var mm = String(hoy.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = hoy.getFullYear();
-    hoy = dd + '/' + mm + '/' + yyyy;
-
-    const ultimo_contacto = hoy;
-
-    var params = {
-        TableName: "ticket",
-        Key: {
-            "id" : id
-            //test use "id": "0533a95d-7eef-4c6b-b753-1a41c9d1fbd0"   
-             }
-        };
-        
-    docClient.get(params, function (err, data) {
-        if (err)  {
-            res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+ null}));
-            return;
-        } else {
-
-            if (Object.keys(data).length == 0) {
-                res.status(400).send(JSON.stringify({"response":"ERROR",message : "ticket no existe"}),null,2);
-                return;
-            } else {
-
-                const paramsUpdate = { 
-   
-                    ExpressionAttributeNames: { 
-                         "#c": "clienteID", 
-                         "#e": "estado_solucion",
-                         "#s": "solucion",
-                         "#a": "fecha_apertura",
-                         "#u": "ultimo_contacto",
-                         "#d": "descripcion"
-                    }, 
-                    ExpressionAttributeValues: { 
-                        ":c":  clienteID, 
-                        ":e":  estado_solucion , 
-                        ":s":  solucion , 
-                        ":a":  fecha_apertura,
-                        ":u":  ultimo_contacto,
-                        ":d":  descripcion 
-                   }, 
-                   Key: { 
-                       "id": id 
-                   }, 
-                   ReturnValues: "ALL_NEW", 
-                   TableName: "ticket", 
-                   UpdateExpression: "SET #c = :c, #e = :e, #a = :a, #s = :s, #d = :d, #u = :u" 
-                };
-                docClient.update(paramsUpdate, function (err, data) {
-                    if (err)  {
-                        res.status(400).send(JSON.stringify({response : "ERROR", message : "DB access error "+err}));
-                        return;
-                    } else {
-                        res.status(200).send(JSON.stringify({response : "OK",  "data": data}));
-                    }    
-                });    
-            }
-        }    
-    })
-
+    res.status(200).send({ response: "OK", data: data.Item });
+  });
 });
-/*-------------------------------------------------[ Fin del API REST ]-------------------------------------------------------------*/
+
+/**
+ * POST /api/updateTicket
+ * Actualiza los datos de un ticket.
+ */
+app.post('/api/updateTicket', (req, res) => {
+  const { id, clienteID, estado_solucion, solucion, descripcion, fecha_apertura } = req.body;
+
+  if (!id || !clienteID)
+    return res.status(400).send({ response: "ERROR", message: "Datos incompletos" });
+
+  const fecha = new Date().toLocaleDateString('es-AR');
+
+  const params = {
+    TableName: "ticket",
+    Key: { id },
+    UpdateExpression: `
+      SET #c = :c, #e = :e, #s = :s, #d = :d, #a = :a, #u = :u
+    `,
+    ExpressionAttributeNames: {
+      "#c": "clienteID",
+      "#e": "estado_solucion",
+      "#s": "solucion",
+      "#d": "descripcion",
+      "#a": "fecha_apertura",
+      "#u": "ultimo_contacto"
+    },
+    ExpressionAttributeValues: {
+      ":c": clienteID,
+      ":e": estado_solucion,
+      ":s": solucion,
+      ":d": descripcion,
+      ":a": fecha_apertura,
+      ":u": fecha
+    },
+    ReturnValues: "ALL_NEW"
+  };
+
+  docClient.update(params, (err, data) => {
+    if (err)
+      return res.status(400).send({ response: "ERROR", message: "Error DB: " + err });
+
+    res.status(200).send({ response: "OK", ticket: data.Attributes });
+  });
+});
+
+//---------------------------------[ Fin del servidor ]-------------------------------------------
+
+console.log("✅ API REST lista y segura — Esperando solicitudes...");
