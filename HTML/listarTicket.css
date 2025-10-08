@@ -1,129 +1,303 @@
+/*-----------------------------------------------
+    listarTicket.css
+    Tema blanco con azul, centrado y moderno
+    Similar al loginClient.css para consistencia
+-----------------------------------------------*/
+
+/* Reset y tipografía */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f4f8;
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 20px;
-    color: #333;
+    align-items: flex-start;
+    /* Cambiado a flex-start para que no esté en el centro vertical, ya que es una página de contenido */
+    min-height: 100vh;
+    padding: 20px 0;
+    /* Espaciado superior e inferior para páginas largas */
 }
 
+/* Contenedor principal */
 .ticket-container {
     background-color: #ffffff;
-    padding: 20px 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
     width: 90%;
-    max-width: 1000px;
-    margin-top: 20px;
+    max-width: 800px;
+    /* Más ancho que el login para acomodar listas/tabla de tickets */
     text-align: center;
 }
 
-.logo {
-    width: 150px;
-    height: auto;
+/* Logo */
+.ticket-container .logo {
+    width: 120px;
     margin-bottom: 20px;
 }
 
-h1, h2 {
-    color: #333;
-}
-
-h2 {
-    margin-bottom: 30px;
-}
-
-/* --- Breadcrumb --- */
-ul.breadcrumb {
-    padding: 10px 16px;
+/* Breadcrumb */
+.breadcrumb {
     list-style: none;
-    background-color: #eee;
-    border-radius: 5px;
-    display: inline-block; /* Para que no ocupe todo el ancho */
-    margin-bottom: 20px;
+    padding: 0;
+    margin: 0 0 20px 0;
+    display: flex;
+    justify-content: center;
+    /* Centrar el breadcrumb horizontalmente */
+    align-items: center;
+    gap: 10px;
+    /* Espacio entre elementos */
+    font-size: 14px;
 }
 
-ul.breadcrumb li {
-    display: inline;
-    font-size: 16px;
+.breadcrumb li {
+    color: #555;
 }
 
-ul.breadcrumb li+li:before {
-    padding: 8px;
-    color: black;
-    content: "/\00a0";
-}
-
-ul.breadcrumb li a {
+.breadcrumb li a {
     color: #007bff;
     text-decoration: none;
 }
 
-ul.breadcrumb li a:hover {
+.breadcrumb li a:hover {
     text-decoration: underline;
 }
 
-/* --- User Info --- */
+.breadcrumb li:not(:last-child)::after {
+    content: " > ";
+    /* Separador simple */
+    color: #ccc;
+}
+
+/* Títulos */
+.ticket-container h1 {
+    margin: 0 0 10px 0;
+    color: #0d3b66;
+    font-size: 28px;
+    /* Ligeramente más grande para encabezado principal */
+}
+
+.ticket-container h2 {
+    margin: 0 0 25px 0;
+    color: #007bff;
+    font-size: 20px;
+}
+
+/* Información de usuario (lastlogin) */
 .user-info {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 15px;
     margin-bottom: 20px;
-    text-align: left;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.user-info table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.user-info td {
-    padding: 5px;
-}
-
-.user-info td:first-child {
-    font-weight: bold;
-    width: 150px;
-}
-
-/* --- Ticket Table --- */
-.ticket-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
     font-size: 14px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    color: #555;
+    text-align: center;
 }
 
-.ticket-table th, .ticket-table td {
-    border: 1px solid #ddd;
-    padding: 12px 15px;
+/* Contenido principal (app) - Para tabla o lista de tickets */
+#app {
+    width: 100%;
+    text-align: left;
+    /* Alinear contenido de tickets a la izquierda para mejor legibilidad */
+    margin-bottom: 20px;
+}
+
+/* Mensajes (ej. errores o info) */
+#mensajes {
+    margin-top: 15px;
+    font-size: 14px;
+    color: red;
+    /* Similar a errores en login */
+    text-align: center;
+    display: block;
+}
+
+/* Estilos generales para elementos que podrían aparecer en #app (ej. tabla de tickets) */
+/* Asumiendo que JS genera una tabla, agregar estilos base para consistencia */
+#app table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#app th,
+#app td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#app th {
+    background-color: #f8f9fa;
+    color: #0d3b66;
+    font-weight: bold;
+}
+
+#app tr:hover {
+    background-color: #f0f4f8;
+}
+
+/* Botones o links en la página (si aparecen en JS) - Estilo similar al login */
+#app button,
+#app a.button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    display: inline-block;
+    margin: 5px;
+}
+
+#app button:hover,
+#app a.button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 600px) {
+    .ticket-container {
+        width: 95%;
+        padding: 20px 15px;
+    }
+
+    .breadcrumb {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    #app table {
+        font-size: 14px;
+    }
+
+    #app th,
+    #app td {
+        padding: 8px;
+    }
+}
+
+/* 🔹 NUEVO: Estilos para containers de secciones */
+.user-info-container,
+.tickets-container {
+    background-color: #ffffff;
+    /* Fondo blanco para resaltar dentro del contenedor principal */
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil para "card" effect */
+    border: 1px solid #e9ecef;
+}
+
+.user-info-container {
+    border-left: 4px solid #007bff;
+    /* Borde azul izquierdo para acento en info usuario */
+    text-align: left;
+    /* Alinear texto a la izquierda para legibilidad */
+}
+
+.tickets-container {
+    border-left: 4px solid #28a745;
+    /* Borde verde para tickets (éxito/estado) */
+}
+
+/* Subtítulos de secciones */
+.section-title {
+    margin: 0 0 15px 0;
+    color: #0d3b66;
+    font-size: 20px;
+    text-align: center;
+    border-bottom: 2px solid #007bff;
+    /* Línea azul debajo para separación */
+    padding-bottom: 5px;
+}
+
+/* Detalles del usuario (dentro de #tituloUsuario) */
+.user-details {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.user-details strong {
+    color: #007bff;
+    /* Azul para labels en negrita */
+}
+
+/* Placeholder de carga */
+#app p,
+#tituloUsuario p {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Sección de logout */
+.logout-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.logout-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #dc3545;
+    /* Rojo para logout (distinto al azul principal) */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}
+
+/* Mejora para la tabla de tickets (ya existe, pero ajusta si es necesario) */
+#app table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #ffffff;
+}
+
+#app th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
     text-align: left;
 }
 
-.ticket-table th {
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
+#app td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
 }
 
-.ticket-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+#app tr:nth-child(even) {
+    background-color: #f8f9fa;
+    /* Rayas alternas para mejor legibilidad */
 }
 
-.ticket-table tr:hover {
-    background-color: #e9ecef;
+#app tr:hover {
+    background-color: #e3f2fd;
+    /* Azul claro en hover */
 }
 
-/* --- Messages --- */
-#mensajes {
-    color: #dc3545; /* Rojo para errores */
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 20px;
+/* Responsive: En móviles, tablas se apilan o scroll horizontal */
+@media (max-width: 600px) {
+
+    .user-info-container,
+    .tickets-container {
+        padding: 15px;
+        margin: 10px 0;
+    }
+
+    #app table {
+        overflow-x: auto;
+        /* Scroll horizontal si la tabla es ancha */
+        display: block;
+        white-space: nowrap;
+    }
 }

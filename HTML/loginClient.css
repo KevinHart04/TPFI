@@ -1,107 +1,210 @@
+/*-----------------------------------------------
+    loginClient.css
+    Tema blanco con azul, centrado y moderno
+-----------------------------------------------*/
+
+/* Reset y tipografía */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f4f8;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    margin: 20px;
+    height: 100vh;
 }
 
+/* Contenedor principal */
 .login-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    width: 400px;
     text-align: center;
 }
 
-.logo {
-    width: 150px;
-    height: auto;
+/* Logo */
+.login-container .logo {
+    width: 120px;
     margin-bottom: 20px;
 }
 
-h1, h2 {
-    color: #333;
+/* Títulos */
+.login-container h1 {
+    margin: 0;
+    color: #0d3b66;
+    font-size: 24px;
+    margin-bottom: 5px;
 }
 
-.form {
-    background-color: #ffffff;
-    padding: 20px 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    margin-top: 20px;
+.login-container h2 {
+    margin: 0 0 25px 0;
+    color: #007bff;
+    font-size: 20px;
 }
 
-.form table {
+/* Formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    border-spacing: 0 15px; /* Espacio vertical entre filas */
+    /* Asegurar que el form ocupe el ancho para centrar hijos */
 }
 
-.form td {
+/* Tabla interna para inputs */
+form table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+form tr {
+    display: flex;
+    /* Usar flex para mejor control de columnas */
+    align-items: center;
+    margin-bottom: 8px;
+    /* Espaciado entre filas */
+}
+
+form td {
+    padding: 8px 0;
+}
+
+form td:first-child {
+    flex: 1;
+    /* Primera columna (labels) toma espacio mínimo pero alineada a la izquierda */
     text-align: left;
-    vertical-align: middle;
-}
-
-.label-cell {
-    width: 120px; /* Ancho fijo para las etiquetas */
     padding-right: 10px;
-    white-space: nowrap; /* Evita que el texto de la etiqueta se divida */
+    /* Espacio entre label e input */
+    width: auto;
+    /* Ajuste flexible */
 }
 
+form td:last-child {
+    flex: 2;
+    /* Segunda columna (inputs) toma más espacio, alineada a la derecha */
+    text-align: right;
+    padding-left: 10px;
+    /* Espacio entre label e input */
+    width: auto;
+    /* Ajuste flexible */
+}
+
+/* Labels */
 .form-label {
+    display: block;
+    text-align: left;
     font-weight: bold;
-    color: #555;
-    margin-bottom: 0; /* Eliminado el margen inferior */
-    display: inline-block; /* Cambiado a inline-block para alinear */
+    color: #0d3b66;
 }
 
+/* Inputs */
 .txt {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
+    border-radius: 6px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+    outline: none;
     font-size: 16px;
+    box-sizing: border-box;
+    text-align: left;
+    /* Asegurar que el texto dentro del input esté alineado a la izquierda, aunque el contenedor esté a la derecha */
 }
 
+.txt:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Botón */
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    width: 100%;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Links (ej. "Olvidaste la contraseña") */
 .links {
-    text-align: center;
     font-size: 14px;
+        display: flex;
+        /* Usar flex para centrar el checkbox y su texto */
+        justify-content: center;
+        /* Centrar horizontalmente */
+        align-items: center;
+        /* Centrar verticalmente si es necesario */
+        width: 100%;
+        /* Asegurar que ocupe el ancho del contenedor */
+        margin-top: 10px;
+        gap: 5px;
+        /* Espacio entre input y texto */
 }
 
 .links a {
     color: #007bff;
     text-decoration: none;
+    display: inline-block;
+    /* Permitir que los links se centren como bloques inline */
 }
 
 .links a:hover {
     text-decoration: underline;
 }
 
-.terms {
-    font-size: 12px;
-    color: #666;
-    text-align: center;
-}
-
-button[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #218838;
-}
-
+/* Disclaimer */
 .disclaimer {
-    margin-top: 20px;
+    margin-top: 15px;
     font-size: 12px;
-    color: #888;
+    color: #555;
+    text-align: center;
+    /* Centrar el disclaimer */
+    width: 100%;
+    /* Asegurar que ocupe el ancho del contenedor */
+}
+
+/* Mensajes de error/resultado */
+#resultado1,
+#resultado2 {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    /* Centrar mensajes de error para mantener consistencia */
+    width: 100%;
+    /* Asegurar centrado */
+}
+
+/* Checkbox (ej. términos y condiciones) */
+.terms {
+    font-size: 14px;
+    display: flex;
+    /* Usar flex para centrar el checkbox y su texto */
+    justify-content: center;
+    /* Centrar horizontalmente */
+    align-items: center;
+    /* Centrar verticalmente si es necesario */
+    width: 100%;
+    /* Asegurar que ocupe el ancho del contenedor */
+    margin-top: 10px;
+    gap: 5px;
+    /* Espacio entre input y texto */
+}
+
+.terms input {
+    margin: 0;
+    /* Remover margen predeterminado para mejor control */
+    flex-shrink: 0;
+    /* Evitar que el input se encoja */
 }

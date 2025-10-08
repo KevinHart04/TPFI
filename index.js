@@ -19,12 +19,11 @@ import express from 'express';
 import cors from 'cors';
 import crypto from 'crypto';
 import AWS from 'aws-sdk';
-import chalk from 'chalk';
-
+import log from './utils/logger.js';
 import accessKeyId from '../accessKeyId.js';
 import secretAccessKey from '../secretAccessKey.js';
 
-console.log("🚀 Iniciando servidor Mesa de Ayuda...");
+log.info("Iniciando servidor Mesa de Ayuda...");
 
 //---------------------------------[ Configuración de AWS DynamoDB ]------------------------------
 
@@ -38,7 +37,7 @@ const awsConfig = {
 AWS.config.update(awsConfig);
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-console.log("✅ AWS DynamoDB configurado correctamente.");
+log.success("AWS DynamoDB configurado correctamente.");
 
 //---------------------------------[ Configuración de Express ]-----------------------------------
 
@@ -49,7 +48,7 @@ app.use(cors());
 app.use(express.json());
 
 app.listen(PORT, () => {
-  console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
+  log.success(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
 //---------------------------------[ Función auxiliar ]-------------------------------------------
@@ -71,7 +70,7 @@ function jsonParser(keyValue, stringValue) {
  */
 app.get('/api/cliente', (req, res) => {
   res.status(200).send({ response: "OK", message: "API Cliente disponible" });
-  console.log("🟢 API Cliente: OK");
+  log.success("API Cliente disponible")
 });
 
 /**
@@ -81,7 +80,7 @@ app.get('/api/cliente', (req, res) => {
 app.post('/api/loginCliente', async (req, res) => {
   const { contacto, password } = req.body;
 
-  console.log(`Intento de login: contacto(${contacto})`);
+  log.info(`Intento de login: contacto(${contacto})`);
 
   if (!contacto) return res.status(400).send({ response: "ERROR", message: "Contacto no informado" });
   if (!password) return res.status(400).send({ response: "ERROR", message: "Password no informada" });
@@ -108,7 +107,7 @@ app.post('/api/loginCliente', async (req, res) => {
   if (!cliente.activo)
     return res.status(400).send({ response: "ERROR", message: "Cliente inactivo" });
 
-  console.log(`✅ Login exitoso: ${contacto}`);
+  log.success(`Login exitoso: ${contacto}`);
 
   // 🔹 devolvemos también el id del cliente
   res.status(200).send({
@@ -141,7 +140,7 @@ async function scanDb(contacto) {
 app.post('/api/addCliente', async (req, res) => {
   const { contacto, password, nombre } = req.body;
 
-  console.log(`Alta de nuevo cliente: ${contacto}`);
+  log.info(`Alta de nuevo cliente: ${contacto}`);
 
   if (!contacto || !password || !nombre) {
     return res.status(400).send({ response: "ERROR", message: "Datos incompletos" });
@@ -188,7 +187,7 @@ app.post('/api/addCliente', async (req, res) => {
 app.post('/api/updateCliente', (req, res) => {
   const { contacto, nombre, password, activo, registrado } = req.body;
 
-  console.log(`Actualizando cliente: ${contacto}`);
+  log.info(`Actualizando cliente: ${contacto}`);
 
   if (!contacto || !nombre || !password)
     return res.status(400).send({ response: "ERROR", message: "Faltan datos obligatorios" });
@@ -244,10 +243,10 @@ app.post('/api/resetCliente', async (req, res) => {
 
     const cliente = result.Items[0]; // Obtenemos el cliente completo, incluido su id
 
-    // 🔑 2️⃣ Actualizar la contraseña usando el id
+    //Actualizar la contraseña usando el id
     const params = {
       TableName: "cliente",
-      Key: { id: cliente.id },  // 🔹 Usar id como Key principal
+      Key: { id: cliente.id },  // Usar id como Key principal
       UpdateExpression: "SET #p = :p",
       ExpressionAttributeNames: { "#p": "password" },
       ExpressionAttributeValues: { ":p": password },
@@ -267,7 +266,7 @@ app.post('/api/resetCliente', async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ Error al buscar cliente:", error);
+    log.error(`Error al buscar cliente: ${error}`);
     res.status(500).send({ response: "ERROR", message: "Error interno del servidor" });
   }
 });
@@ -305,7 +304,7 @@ app.post('/api/listarTicket', async (req, res) => {
       });
     }
 
-    console.log(`📩 Buscando tickets del cliente con ID: ${id_cliente}`);
+    log.info(`Buscando tickets del cliente con ID: ${id_cliente}`);
 
     // 🔹 Llamamos a la función que obtiene los tickets (debe buscar por ID ahora)
     const tickets = await scanDbTicket(id_cliente);
@@ -430,4 +429,4 @@ app.post('/api/updateTicket', (req, res) => {
 
 //---------------------------------[ Fin del servidor ]-------------------------------------------
 
-console.log("✅ API REST lista y segura — Esperando solicitudes...");
+log.success("API REST lista y segura — Esperando solicitudes...");

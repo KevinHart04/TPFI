@@ -1,38 +1,57 @@
 <!DOCTYPE html>
-<!--------------------------------------------------------------------------------------------------------------------------->
-<!-- listarTicket.html                                                                                                     -->                                                                                                      
-<!-- Taller de maquetado - aplicación ejemplo Mesa de Ayuda                                                                -->                                                                                                      
-<!-- Dr. Pedro E. Colla                                                                                                    -->                                                                                                      
-<!-- UADER - Ingeniería de Software I                                                                                      -->                                                                                                      
-<!--------------------------------------------------------------------------------------------------------------------------->
+<html lang="es">
 
-<html Lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <title>Mesa de Ayuda - Mis Tickets</title>
-        <link rel="stylesheet" href="listarTicket.css">
-    </head>
-    <body>
-        <div class="ticket-container">
-            <img src="HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo">
-            
-            <ul class="breadcrumb">
-                <li><a href="loginClient.html">Login</a></li>
-                <li>Mis Tickets</li>
-            </ul>
-            
-            <h1>Sistema de Mesa de Ayuda</h1>
-            <h2 id="tituloUsuario">Tickets activos</h2>
-            
-            <div id="lastlogin" class="user-info"></div>
-            
-            <div id="app"></div>
-            <p id="mensajes"></p>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Mesa de Ayuda - Mis Tickets</title>
+    <link rel="stylesheet" href="listarTicket.css">
+</head>
+
+<body>
+    <div class="ticket-container">
+        <!-- Logo -->
+        <img src="HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo">
+
+        <!-- Breadcrumb -->
+        <ul class="breadcrumb">
+            <li><a href="loginClient.html">Login</a></li>
+            <li>Mis Tickets</li>
+        </ul>
+
+        <!-- Título principal -->
+        <h1>Sistema de Mesa de Ayuda</h1>
+
+        <!-- 🔹 NUEVO: Container para información del usuario (estilizado como card) -->
+        <div class="user-info-container">
+            <h2 class="section-title">Información del Usuario</h2>
+            <div id="tituloUsuario" class="user-details">
+                <!-- Este contenido se sobrescribirá dinámicamente con JS -->
+                <!-- Placeholder inicial (se reemplazará) -->
+                <p>Cargando información...</p>
+            </div>
         </div>
-        
-        <script src="listarTicket.js" type="module"></script>
-    
-    </body>
+
+        <!-- 🔹 NUEVO: Container para tickets (estilizado como tabla en un card) -->
+        <div class="tickets-container">
+            <h2 class="section-title">Mis Tickets</h2>
+            <div id="app">
+                <!-- Aquí se insertará la tabla de tickets generada por JS -->
+                <p>Cargando tickets...</p>
+            </div>
+        </div>
+
+        <!-- 🔹 NUEVO: Botón de cierre de sesión (opcional, pero útil) -->
+        <div class="logout-section">
+            <button id="logout" class="logout-btn">Cerrar Sesión</button>
+        </div>
+
+        <!-- Mensajes de error/info (al final) -->
+        <p id="mensajes"></p>
+    </div>
+
+    <script src="listarTicket.js" type="module"></script>
+</body>
+
 </html>

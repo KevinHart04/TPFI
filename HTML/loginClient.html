@@ -1,87 +1,86 @@
 <!DOCTYPE html>
-<!--------------------------------------------------------------------------------------------------------------------------->
-<!-- loginClient.html                                                                                                      -->                                                                                                      
-<!-- Taller de maquetado - aplicación ejemplo Mesa de Ayuda                                                                -->                                                                                                      
-<!-- Dr. Pedro E. Colla                                                                                                    -->                                                                                                      
-<!-- UADER - Ingeniería de Software I                                                                                      -->                                                                                                      
-<!--------------------------------------------------------------------------------------------------------------------------->
+<html lang="en">
 
-<html Lang="en">
-    <head>
-        <link rel = "stylesheet" href = "loginClient.css">
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <title>POST Form Data as JSON with JavaScript Fetch API</title>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Cliente</title>
+    <!-- Link al CSS externo -->
+    <link rel="stylesheet" href="loginClient.css">
+</head>
 
-        <style type="text/css"> 
-  
-            label { 
-              font-size: 18px; 
-            } 
-            form {
-                width: 500px;
-                border: 1px solid black; 
-            }
-            input { 
-              margin: 7px; 
-              padding: 2px 
-            } 
-            .form-label{
-                margin-bottom:0!important;
-            }     
-            .txt {
-                display: inline-block;
-                  width: 80%;
-                  outline: none;
-                margin:0;
-            }
-        </style> 
-    </head>
 <body>
     <div class="login-container">
         <img src="HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo">
         <h1>Sistema de Mesa de Ayuda</h1>
         <h2>Iniciar sesión</h2>
 
-        <!-- Formulario para enviar los datos -->
+        <!-- Formulario reorganizado -->
         <form class="form" method="GET">
-        <table>
-            <tr>
-                <td><label for="contacto" class="form-label">Correo Electrónico</label></td>
-            </tr>
-            <tr>
-                <td><input class="txt" name="contacto" id="contacto" type="email" placeholder="Ingrese su correo electrónico"></td>
-            </tr>
-            <tr>
-                <td class="label-cell"><label for="password" class="form-label">Contraseña</label></td>
-                <td><input class="txt" name="password" id="password" type="password" placeholder="Ingrese su contraseña"></td>
-            </tr>
-            <tr><td colspan="2"><span id="resultado1"></span></td></tr>
-            <tr>
-                <td colspan="2" class="links"><a href="recuperarPassword.html">¿Olvidaste tu contraseña?</a></td>            </tr>
-            <tr>
-                <td colspan="2" class="links"><span>¿No tienes una cuenta? </span><a href="#">Regístrate</a></td>
-            </tr>
-            <tr>
-                <td colspan="2" class="terms">
-                    <input name="termscondition" type="checkbox"> Acepto los términos y condiciones
-                </td>
-            </tr>
-            <tr><td colspan="2"><span id="resultado2"></span></td></tr>
-        </table>
-        <button type="submit"> < Ingresar</button> 
+            <table>
+                <!-- Correo -->
+                <tr>
+                    <td><label for="contacto" class="form-label">Correo Electrónico</label></td>
+                    <td><input class="txt" name="contacto" id="contacto" type="email"
+                            placeholder="Ingrese su correo electrónico"></td>
+                </tr>
+                <tr>
+                </tr>
+
+                <!-- Contraseña -->
+                <tr>
+                    <td><label for="password" class="form-label">Contraseña</label></td>
+                    <td><input class="txt" name="password" id="password" type="password"
+                            placeholder="Ingrese su contraseña"></td>
+                </tr>
+                <tr>
+                </tr>
+
+                <!-- Checkbox términos arriba del link -->
+                <tr>
+                    <td class="terms">
+                        <input name="termscondition" type="checkbox"> Acepto los términos y condiciones
+                    </td>
+                </tr>
+
+                <!-- Link "Olvidaste tu contraseña" -->
+                <tr>
+                    <td class="links"><a href="recuperarPassword.html">¿Olvidaste tu contraseña?</a></td>
+                </tr>
+
+                <!-- Botón Ingresar -->
+                <tr>
+                    <td>
+                        <button type="submit">Ingresar</button>
+                    </td>
+                </tr>
+
+                <!-- Link "No tienes cuenta" al final -->
+                <tr>
+                    <td class="links">
+                        <span>¿No tienes una cuenta? </span><a href="#">Regístrate</a>
+                    </td>
+                </tr>
+
+                <!-- Espacios para resultados -->
+                <tr>
+                    <td><span id="resultado1"></span></td>
+                </tr>
+                <tr>
+                    <td><span id="resultado2"></span></td>
+                </tr>
+            </table>
         </form>
+
         <p class="disclaimer">¡Todo lo que Ud. diga o haga en éste sistema podrá ser usado en su contra!</p>
     </div>
 
-    <!-- Area para crear contenido dinámico -->
-    
     <div id="app"></div>
     <ul id="listado"></ul>
-    
-    <!-- Script a ser ejecutado --> 
-    <script src="loginClient.js" type="module"></script>
-    
 
+    <!-- Script a ser ejecutado -->
+    <script src="loginClient.js" type="module"></script>
 </body>
+
+</html>
