@@ -97,8 +97,13 @@ app.post('/api/loginCliente', async (req, res) => {
     return res.status(400).send({ response: "ERROR", message: "Cliente no encontrado" });
 
   const cliente = result.Items[0];
+  console.log("🔑 Contraseña DB:", cliente.password);
+  console.log("🔑 Contraseña ingresada:", password);
+  console.log("🔒 Cliente activo:", cliente.activo);
+  console.log("👤 Datos del cliente:", cliente);
 
-  if (cliente.password !== password)
+
+  if (cliente.password.trim() !== password.trim())
     return res.status(400).send({ response: "ERROR", message: "Contraseña incorrecta" });
   if (!cliente.activo)
     return res.status(400).send({ response: "ERROR", message: "Cliente inactivo" });
@@ -219,26 +224,52 @@ app.post('/api/updateCliente', (req, res) => {
  * POST /api/resetCliente
  * Cambia la contraseña de un cliente (identificado por contacto).
  */
-app.post('/api/resetCliente', (req, res) => {
+app.post('/api/resetCliente', async (req, res) => {
   const { contacto, password } = req.body;
+
+  // Validación de datos
   if (!contacto || !password)
     return res.status(400).send({ response: "ERROR", message: "Datos incompletos" });
 
-  const params = {
-    TableName: "cliente",
-    Key: { contacto },
-    UpdateExpression: "SET #p = :p",
-    ExpressionAttributeNames: { "#p": "password" },
-    ExpressionAttributeValues: { ":p": password },
-    ReturnValues: "ALL_NEW"
-  };
+  try {
+    // 🔎 1️⃣ Buscar al cliente por contacto (porque id es la Key principal)
+    const result = await docClient.scan({
+      TableName: "cliente",
+      FilterExpression: "contacto = :c",
+      ExpressionAttributeValues: { ":c": contacto }
+    }).promise();
 
-  docClient.update(params, (err, data) => {
-    if (err)
-      return res.status(400).send({ response: "ERROR", message: "Error DB: " + err });
+    if (!result.Items.length)
+      return res.status(404).send({ response: "ERROR", message: "Cliente no encontrado" });
 
-    res.status(200).send({ response: "OK", message: "Password actualizada", cliente: data.Attributes });
-  });
+    const cliente = result.Items[0]; // Obtenemos el cliente completo, incluido su id
+
+    // 🔑 2️⃣ Actualizar la contraseña usando el id
+    const params = {
+      TableName: "cliente",
+      Key: { id: cliente.id },  // 🔹 Usar id como Key principal
+      UpdateExpression: "SET #p = :p",
+      ExpressionAttributeNames: { "#p": "password" },
+      ExpressionAttributeValues: { ":p": password },
+      ReturnValues: "ALL_NEW"
+    };
+
+    docClient.update(params, (err, data) => {
+      if (err)
+        return res.status(500).send({ response: "ERROR", message: "Error DB: " + err });
+
+      // ✅ Respuesta exitosa
+      res.status(200).send({
+        response: "OK",
+        message: "Password actualizada",
+        cliente: data.Attributes
+      });
+    });
+
+  } catch (error) {
+    console.error("❌ Error al buscar cliente:", error);
+    res.status(500).send({ response: "ERROR", message: "Error interno del servidor" });
+  }
 });
 
 //---------------------------------[ API REST: Tickets ]------------------------------------------
