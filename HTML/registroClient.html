@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Registro de Cliente - Sistema de Mesa de Ayuda</title>
+  <link rel="stylesheet" href="loginClient.css">
+  <style type="text/css">
+    label {
+      font-size: 18px;
+    }
+    form {
+      width: 500px;
+      border: 1px solid black;
+      padding: 20px;
+      margin: 0 auto;
+      background-color: #f9f9f9;
+    }
+    input {
+      margin: 7px;
+      padding: 5px;
+    }
+    .form-label {
+      margin-bottom: 0 !important;
+    }
+    .txt {
+      display: inline-block;
+      width: 90%;
+      outline: none;
+      margin: 0;
+    }
+    .links {
+      text-align: center;
+      padding-top: 10px;
+    }
+    .terms {
+      padding-top: 10px;
+      text-align: left;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #2b6cb0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1e4e8c;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="HelpDeskGirl.png" alt="Imagen corporativa" class="logo">
+    <h1>Sistema de Mesa de Ayuda</h1>
+    <h2>Registro de Cliente</h2>
+
+    <!-- Formulario de registro -->
+    <form class="form" id="registroForm">
+      <table>
+        <tr>
+          <td><label for="contacto" class="form-label">Correo Electrónico</label></td>
+        </tr>
+        <tr>
+          <td><input class="txt" name="contacto" id="contacto" type="email" placeholder="Ingrese su correo electrónico" required></td>
+        </tr>
+        <tr>
+          <td><label for="password" class="form-label">Contraseña</label></td>
+        </tr>
+        <tr>
+          <td><input class="txt" name="password" id="password" type="password" placeholder="Elija una contraseña" required></td>
+        </tr>
+        <tr>
+          <td class="terms">
+            <input name="termscondition" id="termscondition" type="checkbox"> Acepto los términos y condiciones (obligatorio)
+          </td>
+        </tr>
+        <tr><td><span id="resultado"></span></td></tr>
+      </table>
+      <button type="submit">Registrarse</button>
+      <div class="links">
+        <span>¿Ya tienes una cuenta?</span> <a href="loginClient.html">Iniciar sesión</a>
+      </div>
+    </form>
+    <p class="disclaimer">Al registrarse acepta las condiciones del sistema de Mesa de Ayuda.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('registroForm');
+    const resultado = document.getElementById('resultado');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const contacto = document.getElementById('contacto').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const termsAccepted = document.getElementById('termscondition').checked;
+
+      if (!contacto || !password) {
+        resultado.textContent = 'Debe completar todos los campos.';
+        resultado.style.color = 'red';
+        return;
+      }
+
+      if (!termsAccepted) {
+        resultado.textContent = 'Debe aceptar los términos y condiciones.';
+        resultado.style.color = 'red';
+        return;
+      }
+
+      // Simula verificación de existencia del usuario
+      let clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+      const existe = clientes.find(c => c.contacto === contacto);
+
+      if (existe) {
+        resultado.textContent = 'El usuario ya existe. No se puede registrar nuevamente.';
+        resultado.style.color = 'red';
+        return;
+      }
+
+      // Crear nuevo cliente
+      const ahora = new Date().toLocaleString('es-AR');
+      const nuevoCliente = {
+        id: Date.now(),
+        contacto: contacto,
+        password: password,
+        activo: true,
+        registrado: true,
+        fecha_registro: ahora,
+        fecha_ultimo_ingreso: ahora,
+        fecha_cambio_password: ahora,
+        primer_ingreso: ahora
+      };
+
+      clientes.push(nuevoCliente);
+      localStorage.setItem('clientes', JSON.stringify(clientes));
+
+      resultado.textContent = 'Registro exitoso. Redirigiendo al login...';
+      resultado.style.color = 'green';
+
+      setTimeout(() => {
+        window.location.href = 'loginClient.html';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
