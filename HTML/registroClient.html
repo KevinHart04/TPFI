@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Registro de Cliente - Sistema de Mesa de Ayuda</title>
-  <link rel="stylesheet" href="loginClient.css">
+  <link rel="stylesheet" href="registroClient.css">
   <style type="text/css">
     label {
       font-size: 18px;
@@ -54,7 +54,6 @@
 </head>
 <body>
   <div class="login-container">
-    <img src="HelpDeskGirl.png" alt="Imagen corporativa" class="logo">
     <h1>Sistema de Mesa de Ayuda</h1>
     <h2>Registro de Cliente</h2>
 
@@ -74,8 +73,14 @@
           <td><input class="txt" name="password" id="password" type="password" placeholder="Elija una contraseña" required></td>
         </tr>
         <tr>
+          <td><label for="password" class="form-label">Confirmar contraseña</label></td>
+        </tr>
+        <tr>
+          <td><input class="txt" name="password" id="password" type="password" placeholder="Confirmar contraseña" required></td>
+        </tr>
+        <tr>
           <td class="terms">
-            <input name="termscondition" id="termscondition" type="checkbox"> Acepto los términos y condiciones (obligatorio)
+            <input name="termscondition" id="termscondition" type="checkbox" required aria-required="true"> Acepto los términos y condiciones (obligatorio)
           </td>
         </tr>
         <tr><td><span id="resultado"></span></td></tr>
@@ -85,66 +90,7 @@
         <span>¿Ya tienes una cuenta?</span> <a href="loginClient.html">Iniciar sesión</a>
       </div>
     </form>
-    <p class="disclaimer">Al registrarse acepta las condiciones del sistema de Mesa de Ayuda.</p>
   </div>
-
-  <script>
-    const form = document.getElementById('registroForm');
-    const resultado = document.getElementById('resultado');
-
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const contacto = document.getElementById('contacto').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const termsAccepted = document.getElementById('termscondition').checked;
-
-      if (!contacto || !password) {
-        resultado.textContent = 'Debe completar todos los campos.';
-        resultado.style.color = 'red';
-        return;
-      }
-
-      if (!termsAccepted) {
-        resultado.textContent = 'Debe aceptar los términos y condiciones.';
-        resultado.style.color = 'red';
-        return;
-      }
-
-      // Simula verificación de existencia del usuario
-      let clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
-      const existe = clientes.find(c => c.contacto === contacto);
-
-      if (existe) {
-        resultado.textContent = 'El usuario ya existe. No se puede registrar nuevamente.';
-        resultado.style.color = 'red';
-        return;
-      }
-
-      // Crear nuevo cliente
-      const ahora = new Date().toLocaleString('es-AR');
-      const nuevoCliente = {
-        id: Date.now(),
-        contacto: contacto,
-        password: password,
-        activo: true,
-        registrado: true,
-        fecha_registro: ahora,
-        fecha_ultimo_ingreso: ahora,
-        fecha_cambio_password: ahora,
-        primer_ingreso: ahora
-      };
-
-      clientes.push(nuevoCliente);
-      localStorage.setItem('clientes', JSON.stringify(clientes));
-
-      resultado.textContent = 'Registro exitoso. Redirigiendo al login...';
-      resultado.style.color = 'green';
-
-      setTimeout(() => {
-        window.location.href = 'loginClient.html';
-      }, 2000);
-    });
-  </script>
+  <script src="registroClient.js" type="module"></script>
 </body>
 </html>

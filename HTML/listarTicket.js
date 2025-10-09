@@ -66,54 +66,46 @@ const RESTAPI = {
 ---------------------------------------------------------------------------------------------*/
 
 async function obtenerTickets() {
-    const HTMLResponse = document.querySelector("#app"); // ✅ Movido aquí para asegurar DOM listo
-    const ul = document.createElement("ul"); // ✅ Creación de ul dentro de la función para frescura
-    
-    if (!HTMLResponse) {
-        console.error("❌ Elemento #app no encontrado en el DOM");
+    const tbody = document.querySelector(".tickets-container table tbody");
+
+    if (!tbody) {
+        console.error("❌ tbody no encontrado");
         return;
     }
-    
+
     try {
-        /* 🔹 MODIFICADO: ahora enviamos el id_cliente al backend */
         const body = { id_cliente: id_cliente };
-
         const options = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
         };
-
-        console.log("📡 Solicitando tickets del cliente con ID:", id_cliente);
 
         const res = await fetch(RESTAPI.listarTicket, options);
         const data = await res.json();
 
         if (data.response !== "OK") {
-          HTMLResponse.innerHTML = `<p style="color:red;">${data.message || "Error al obtener tickets"}</p>`;
-          return;
+            tbody.innerHTML = `<tr><td colspan="5" style="color:red;">${data.message || "Error al obtener tickets"}</td></tr>`;
+            return;
         }
 
-        // Mostrar tickets en el DOM
-        data.data.forEach((ticket) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <strong>ID Ticket:</strong> ${ticket.id}<br>
-            <strong>Descripción:</strong> ${ticket.descripcion}<br>
-            <strong>Solución:</strong> ${ticket.solucion}<br>
-            <strong>Fecha apertura:</strong> ${ticket.fecha_apertura}<br>
-            <strong>Último contacto:</strong> ${ticket.ultimo_contacto}
-          `;
-          ul.appendChild(li);
-        });
+        tbody.innerHTML = ""; // Limpiar filas previas
 
-        HTMLResponse.appendChild(ul);
+        data.data.forEach(ticket => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${nombre}</td>
+                <td>${ticket.id}</td>
+                <td>${ticket.descripcion}</td>
+                <td>${ticket.solucion ? "Resuelto" : "Pendiente"}</td>
+                <td>${ticket.fecha_apertura}</td>
+            `;
+            tbody.appendChild(fila);
+        });
 
     } catch (error) {
         console.error("❌ Error al obtener tickets:", error);
-        HTMLResponse.innerHTML = `<p style="color:red;">Error al conectar con el servidor.</p>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="color:red;">Error al conectar con el servidor.</td></tr>`;
     }
 }
 

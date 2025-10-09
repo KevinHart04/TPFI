@@ -1,0 +1,84 @@
+/* registroClient.css */
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eef2f7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 380px;
+    margin: 48px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    padding: 36px 28px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #253858;
+    margin-bottom: 22px;
+    font-weight: 600;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+label {
+    font-weight: 500;
+    color: #42526e;
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"] {
+    padding: 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: #f4f6fb;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: #2563eb;
+    outline: none;
+    background: #fff;
+}
+
+button[type="submit"] {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 13px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+button[type="submit"]:hover {
+    background: #1e40af;
+}
+
+.error-message {
+    color: #e53e3e;
+    font-size: 0.95rem;
+    margin-top: -6px;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 500px) {
+    .container {
+        padding: 18px 8px;
+    }
+}

@@ -11,31 +11,32 @@
 </head>
 
 <body>
-    <div class="login-container">
+    <div class="logo">
         <img src="HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo">
+    </div>
+    <div class="login-container">
         <h1>Sistema de Mesa de Ayuda</h1>
         <h2>Iniciar sesión</h2>
 
         <!-- Formulario reorganizado -->
         <form class="form" method="GET">
             <table>
-                <!-- Correo -->
-                <tr>
-                    <td><label for="contacto" class="form-label">Correo Electrónico</label></td>
-                    <td><input class="txt" name="contacto" id="contacto" type="email"
-                            placeholder="Ingrese su correo electrónico"></td>
-                </tr>
-                <tr>
-                </tr>
+            <!-- Correo -->
+            <tr>
+                <td><label for="contacto" class="form-label">Correo Electrónico</label></td>
+            </tr>
+            <tr>
+                <td><input class="txt" name="contacto" id="contacto" type="email" placeholder="Ingrese su correo electrónico"></td>
+            </tr>
+            
+            <!-- Contraseña -->
+            <tr>
+                <td><label for="password" class="form-label">Contraseña</label></td>
+            </tr>
+            <tr>
+                <td><input class="txt" name="password" id="password" type="password" placeholder="Ingrese su contraseña"></td>
+            </tr>
 
-                <!-- Contraseña -->
-                <tr>
-                    <td><label for="password" class="form-label">Contraseña</label></td>
-                    <td><input class="txt" name="password" id="password" type="password"
-                            placeholder="Ingrese su contraseña"></td>
-                </tr>
-                <tr>
-                </tr>
 
                 <!-- Checkbox términos arriba del link -->
                 <tr>
@@ -59,7 +60,7 @@
                 <!-- Link "No tienes cuenta" al final -->
                 <tr>
                     <td class="links">
-                        <span>¿No tienes una cuenta? </span><a href="#">Regístrate</a>
+                        <span>¿No tienes una cuenta? </span><a href="registroClient.html">Regístrate</a>
                     </td>
                 </tr>
 
@@ -73,6 +74,8 @@
             </table>
         </form>
 
+    </div>
+    <div class="disclaimer">
         <p class="disclaimer">¡Todo lo que Ud. diga o haga en éste sistema podrá ser usado en su contra!</p>
     </div>
 
