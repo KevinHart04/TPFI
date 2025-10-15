@@ -28,7 +28,7 @@ const id_cliente = usuario.id; // ✅ ID del cliente (debe haberse guardado al h
 // Validar si hay sesión activa
 if (!contacto || !nombre || !id_cliente) {
   alert("Debe iniciar sesión primero.");
-  window.location.href = "loginClient.html";
+  window.location.href = "./loginClient.html"; // Corregido
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -58,7 +58,8 @@ function mostrarInfoUsuario() {
     4️⃣  Definir la URL del endpoint de tickets en el servidor local
 ---------------------------------------------------------------------------------------------*/
 const RESTAPI = {
-  listarTicket: "http://localhost:8080/api/listarTicket",
+  listarTicket: "http://localhost:3000/tickets/listarTicket",
+  addTicket: "http://localhost:3000/tickets/addTicket",
 };
 
 /*---------------------------------------------------------------------------------------------
@@ -66,7 +67,7 @@ const RESTAPI = {
 ---------------------------------------------------------------------------------------------*/
 
 async function obtenerTickets() {
-    const tbody = document.querySelector(".tickets-container table tbody");
+    const tbody = document.querySelector("#tickets-body");
 
     if (!tbody) {
         console.error("❌ tbody no encontrado");
@@ -115,6 +116,7 @@ async function obtenerTickets() {
 window.addEventListener("DOMContentLoaded", function() {
     mostrarInfoUsuario(); // ✅ Ahora dentro de DOMContentLoaded
     obtenerTickets();     // ✅ Ya estaba, pero ahora todo el flujo es seguro
+    setupNewTicketForm(); // ✅ NUEVO: Configurar el formulario de nuevo ticket
 });
 
 /*---------------------------------------------------------------------------------------------
@@ -125,7 +127,60 @@ window.addEventListener("DOMContentLoaded", function() {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
             sessionStorage.clear();
-            window.location.href = "loginClient.html";
+            window.location.href = "./loginClient.html"; // Corregido
         });
     }
 });
+
+/*---------------------------------------------------------------------------------------------
+    8️⃣  NUEVO: Lógica para el formulario de creación de tickets
+---------------------------------------------------------------------------------------------*/
+function setupNewTicketForm() {
+    const btnShowForm = document.getElementById('btn-show-form');
+    const btnCancel = document.getElementById('btn-cancel-new-ticket');
+    const form = document.getElementById('form-new-ticket');
+    const descriptionInput = document.getElementById('new-ticket-description');
+    const messageDiv = document.getElementById('new-ticket-message');
+
+    btnShowForm.addEventListener('click', () => {
+        form.classList.remove('hidden');
+        btnShowForm.classList.add('hidden');
+    });
+
+    btnCancel.addEventListener('click', () => {
+        form.classList.add('hidden');
+        btnShowForm.classList.remove('hidden');
+        descriptionInput.value = '';
+        messageDiv.textContent = '';
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const descripcion = descriptionInput.value.trim();
+        if (!descripcion) {
+            messageDiv.textContent = 'La descripción no puede estar vacía.';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        try {
+            const res = await fetch(RESTAPI.addTicket, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_cliente, descripcion })
+            });
+            const data = await res.json();
+
+            if (data.response === 'OK') {
+                messageDiv.textContent = 'Ticket creado con éxito.';
+                messageDiv.style.color = 'green';
+                setTimeout(() => btnCancel.click(), 1500); // Oculta el form y limpia
+                obtenerTickets(); // Recarga la lista de tickets
+            } else {
+                messageDiv.textContent = data.message || 'Error al crear el ticket.';
+            }
+        } catch (error) {
+            messageDiv.textContent = 'Error de conexión con el servidor.';
+        }
+    });
+}

@@ -44,8 +44,8 @@ formE1.addEventListener('submit', (event) => {
   const MODE = 'LOCAL'; // Cambiar a 'AWS' o 'TYPICODE' según el entorno
 
   const RESTAPI = {
-    loginCliente: 'http://localhost:8080/api/loginCliente',
-    listarTicket: 'http://localhost:8080/api/listarTicket'
+    loginCliente: 'http://localhost:3000/clientes/login',
+    listarTicket: 'http://localhost:3000/tickets/listarTicket'
   };
 
   const AWS_API = 'https://fmtj0jrpp9.execute-api.us-east-1.amazonaws.com/default/loginUserGET';
@@ -107,7 +107,7 @@ formE1.addEventListener('submit', (event) => {
   sessionStorage.setItem('usuario', JSON.stringify(userSession));
 
         // Redirigir a la pantalla de tickets
-        window.location.href = 'listarTicket.html';
+        window.location.href = './listarTicket.html';
       } else {
         mostrarMensaje('Error de login, intente nuevamente.', 'RED');
       }

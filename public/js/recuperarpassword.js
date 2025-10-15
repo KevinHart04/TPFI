@@ -2,6 +2,10 @@
 const form = document.getElementById("formPassword");
 const resultado = document.getElementById("resultado");
 
+const RESTAPI = {
+  resetPassword: "http://localhost:3000/clientes/resetPassword" // Esta ya estaba bien, ¡perfecto!
+};
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -21,8 +25,8 @@ form.addEventListener("submit", async (e) => {
   }
 
   try {
-    // 2️⃣ Llamada al backend para actualizar la contraseña
-    const res = await fetch("http://localhost:8080/api/resetCliente", {
+    // 2️⃣ Llamada al backend modular
+    const res = await fetch(RESTAPI.resetPassword, { // La URL se toma de la constante
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contacto: correo, password: pass1 })
@@ -34,7 +38,7 @@ form.addEventListener("submit", async (e) => {
     if (data.response === "OK") {
       resultado.innerHTML = "<span style='color:green;'>Contraseña actualizada con éxito.</span>";
       setTimeout(() => {
-        window.location.href = "loginClient.html";
+        window.location.href = "./loginClient.html";
       }, 1500);
     } else {
       resultado.innerHTML = `<span style='color:red;'>${data.message || "Error al actualizar la contraseña."}</span>`;

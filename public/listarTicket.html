@@ -6,17 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Mesa de Ayuda - Mis Tickets</title>
-    <link rel="stylesheet" href="listarTicket.css">
+    <link rel="stylesheet" href="./css/listarTicket.css"> <!-- Corregido -->
 </head>
 
 <body>
-    <img src="HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo">
+    <img src="./img/HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo"> <!-- Corregido -->
     <div class="ticket-container">
         <!-- Logo -->
 
         <!-- Breadcrumb -->
         <ul class="breadcrumb">
-            <li><a href="loginClient.html">Login</a></li>
+            <li><a href="./loginClient.html">Login</a></li> <!-- Corregido -->
             <li>Mis Tickets</li>
         </ul>
 
@@ -32,6 +32,21 @@
                 <p>Cargando información...</p>
             </div>
         </div>
+
+        <!-- 🔹 NUEVO: Formulario para crear un nuevo ticket -->
+        <div class="new-ticket-container">
+            <button id="btn-show-form" class="action-btn">Crear Nuevo Ticket</button>
+            <form id="form-new-ticket" class="hidden">
+                <h3 class="section-title">Detalles del Nuevo Ticket</h3>
+                <textarea id="new-ticket-description" placeholder="Describe tu problema aquí..." required></textarea>
+                <div class="form-actions">
+                    <button type="submit" class="action-btn">Guardar Ticket</button>
+                    <button type="button" id="btn-cancel-new-ticket" class="cancel-btn">Cancelar</button>
+                </div>
+                <div id="new-ticket-message"></div>
+            </form>
+        </div>
+
 
         <!-- 🔹 NUEVO: Container para tickets (estilizado como tabla en un card) -->
         <div class="tickets-container">
@@ -68,7 +83,7 @@
         <p id="mensajes"></p>
     </div>
 
-    <script src="listarTicket.js" type="module"></script>
+    <script src="./js/listarTicket.js" type="module"></script> <!-- Corregido -->
 </body>
 
 </html>

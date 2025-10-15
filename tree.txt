@@ -1,0 +1,309 @@
+Listado de rutas de carpetas
+El número de serie del volumen es 7CDC-EE6B
+C:\USERS\KEVIN\DOCUMENTS\UNIVERSIDAD\FACULTAD\01-MATERIAS\INGENIERIA DE SOFTWARE I\TPFI\TP\TP\
+Ruta de acceso no válida: \USERS\KEVIN\DOCUMENTS\UNIVERSIDAD\FACULTAD\01-MATERIAS\INGENIERIA DE SOFTWARE I\TPFI\TP\TP\
+No existe ninguna subcarpeta 
+
+Listado de rutas de carpetas
+El número de serie del volumen es 7CDC-EE6B
+C:.
++---aws
+¦   +---listTicketGET
+¦   +---loginUserGET
++---dynamoDB
++---HTML
++---node_modules
+¦   +---.bin
+¦   +---accepts
+¦   +---asynckit
+¦   ¦   +---lib
+¦   +---available-typed-arrays
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---aws-sdk
+¦   ¦   +---apis
+¦   ¦   +---clients
+¦   ¦   +---Crashpad
+¦   ¦   +---dist
+¦   ¦   +---dist-tools
+¦   ¦   +---lib
+¦   ¦   ¦   +---cloudfront
+¦   ¦   ¦   +---credentials
+¦   ¦   ¦   +---dynamodb
+¦   ¦   ¦   +---event-stream
+¦   ¦   ¦   +---http
+¦   ¦   ¦   +---json
+¦   ¦   ¦   +---metadata_service
+¦   ¦   ¦   +---model
+¦   ¦   ¦   +---polly
+¦   ¦   ¦   +---protocol
+¦   ¦   ¦   +---publisher
+¦   ¦   ¦   +---query
+¦   ¦   ¦   +---rds
+¦   ¦   ¦   +---react-native
+¦   ¦   ¦   +---realclock
+¦   ¦   ¦   +---region
+¦   ¦   ¦   +---s3
+¦   ¦   ¦   +---services
+¦   ¦   ¦   +---shared-ini
+¦   ¦   ¦   +---signers
+¦   ¦   ¦   +---token
+¦   ¦   ¦   +---xml
+¦   ¦   +---scripts
+¦   ¦   ¦   +---changelog
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---region-checker
+¦   ¦   +---vendor
+¦   ¦       +---endpoint-cache
+¦   ¦           +---utils
+¦   +---axios
+¦   ¦   +---dist
+¦   ¦   ¦   +---browser
+¦   ¦   ¦   +---esm
+¦   ¦   ¦   +---node
+¦   ¦   +---lib
+¦   ¦       +---adapters
+¦   ¦       +---cancel
+¦   ¦       +---core
+¦   ¦       +---defaults
+¦   ¦       +---env
+¦   ¦       ¦   +---classes
+¦   ¦       +---helpers
+¦   ¦       +---platform
+¦   ¦           +---browser
+¦   ¦           ¦   +---classes
+¦   ¦           +---common
+¦   ¦           +---node
+¦   ¦               +---classes
+¦   +---base64-js
+¦   +---body-parser
+¦   ¦   +---lib
+¦   ¦       +---types
+¦   +---buffer
+¦   ¦   +---bin
+¦   ¦   +---test
+¦   ¦       +---node
+¦   +---bytes
+¦   +---call-bind
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---call-bind-apply-helpers
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---call-bound
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---chalk
+¦   ¦   +---source
+¦   ¦       +---vendor
+¦   ¦           +---ansi-styles
+¦   ¦           +---supports-color
+¦   +---combined-stream
+¦   ¦   +---lib
+¦   +---content-disposition
+¦   +---content-type
+¦   +---cookie
+¦   +---cookie-signature
+¦   +---cors
+¦   ¦   +---lib
+¦   +---crypto
+¦   +---debug
+¦   ¦   +---src
+¦   +---define-data-property
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---delayed-stream
+¦   ¦   +---lib
+¦   +---depd
+¦   ¦   +---lib
+¦   ¦       +---browser
+¦   +---dotenv
+¦   ¦   +---lib
+¦   +---dunder-proto
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---ee-first
+¦   +---encodeurl
+¦   +---es-define-property
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---es-errors
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---es-object-atoms
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---es-set-tostringtag
+¦   ¦   +---test
+¦   +---escape-html
+¦   +---etag
+¦   +---events
+¦   ¦   +---tests
+¦   +---express
+¦   ¦   +---lib
+¦   +---finalhandler
+¦   +---follow-redirects
+¦   +---for-each
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---form-data
+¦   ¦   +---lib
+¦   ¦   +---node_modules
+¦   ¦       +---mime-db
+¦   ¦       +---mime-types
+¦   +---forwarded
+¦   +---fresh
+¦   +---function-bind
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---generator-function
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---get-intrinsic
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---get-proto
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---gopd
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---has-property-descriptors
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---has-symbols
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   ¦       +---shams
+¦   +---has-tostringtag
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   ¦       +---shams
+¦   +---hasown
+¦   ¦   +---.github
+¦   +---http-errors
+¦   ¦   +---node_modules
+¦   ¦       +---statuses
+¦   +---iconv-lite
+¦   ¦   +---.github
+¦   ¦   +---.idea
+¦   ¦   ¦   +---codeStyles
+¦   ¦   ¦   +---inspectionProfiles
+¦   ¦   +---encodings
+¦   ¦   ¦   +---tables
+¦   ¦   +---lib
+¦   +---ieee754
+¦   +---inherits
+¦   +---ipaddr.js
+¦   ¦   +---lib
+¦   +---is-arguments
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---is-callable
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---is-generator-function
+¦   ¦   +---test
+¦   +---is-promise
+¦   +---is-regex
+¦   ¦   +---test
+¦   +---is-typed-array
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---isarray
+¦   +---jmespath
+¦   ¦   +---artifacts
+¦   +---math-intrinsics
+¦   ¦   +---.github
+¦   ¦   +---constants
+¦   ¦   +---test
+¦   +---media-typer
+¦   +---merge-descriptors
+¦   +---mime-db
+¦   +---mime-types
+¦   +---ms
+¦   +---negotiator
+¦   ¦   +---lib
+¦   +---object-assign
+¦   +---object-inspect
+¦   ¦   +---.github
+¦   ¦   +---example
+¦   ¦   +---test
+¦   ¦       +---browser
+¦   +---on-finished
+¦   +---once
+¦   +---parseurl
+¦   +---path-to-regexp
+¦   ¦   +---dist
+¦   +---possible-typed-array-names
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---proxy-addr
+¦   +---proxy-from-env
+¦   +---punycode
+¦   +---qs
+¦   ¦   +---.github
+¦   ¦   +---dist
+¦   ¦   +---lib
+¦   ¦   +---test
+¦   +---querystring
+¦   ¦   +---test
+¦   +---range-parser
+¦   +---raw-body
+¦   ¦   +---node_modules
+¦   ¦       +---iconv-lite
+¦   ¦           +---encodings
+¦   ¦           ¦   +---tables
+¦   ¦           +---lib
+¦   ¦               +---helpers
+¦   +---router
+¦   ¦   +---lib
+¦   +---safe-buffer
+¦   +---safe-regex-test
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---safer-buffer
+¦   +---sax
+¦   ¦   +---lib
+¦   +---send
+¦   +---serve-static
+¦   +---set-function-length
+¦   ¦   +---.github
+¦   +---setprototypeof
+¦   ¦   +---test
+¦   +---side-channel
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---side-channel-list
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---side-channel-map
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---side-channel-weakmap
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---statuses
+¦   +---toidentifier
+¦   +---type-is
+¦   +---unpipe
+¦   +---url
+¦   +---util
+¦   ¦   +---support
+¦   +---uuid
+¦   ¦   +---dist
+¦   ¦       +---bin
+¦   ¦       +---esm-browser
+¦   ¦       +---esm-node
+¦   ¦       +---umd
+¦   +---vary
+¦   +---which-typed-array
+¦   ¦   +---.github
+¦   ¦   +---test
+¦   +---wrappy
+¦   +---xml2js
+¦   ¦   +---lib
+¦   +---xmlbuilder
+¦       +---lib
+¦       +---typings
++---utils
