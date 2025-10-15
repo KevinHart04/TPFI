@@ -11,17 +11,20 @@
 </head>
 
 <body>
+    <!-- ---------------------------------[ Logo Superior ]--------------------------------- -->
     <div class="logo">
         <img src="./img/HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo">
     </div>
+
+    <!-- ---------------------------------[ Contenedor Principal de Login ]--------------------------------- -->
     <div class="login-container">
         <h1>Sistema de Mesa de Ayuda</h1>
         <h2>Iniciar sesión</h2>
 
-        <!-- Formulario reorganizado -->
+        <!-- ---------------------------------[ Formulario de Login ]--------------------------------- -->
         <form class="form" method="GET">
             <table>
-                <!-- Correo -->
+                <!-- Campo: Correo -->
                 <tr>
                     <td><label for="contacto" class="form-label">Correo Electrónico</label></td>
                 </tr>
@@ -30,7 +33,7 @@
                             placeholder="Ingrese su correo electrónico"></td>
                 </tr>
 
-                <!-- Contraseña -->
+                <!-- Campo: Contraseña -->
                 <tr>
                     <td><label for="password" class="form-label">Contraseña</label></td>
                 </tr>
@@ -39,34 +42,33 @@
                             placeholder="Ingrese su contraseña"></td>
                 </tr>
 
-
-                <!-- Checkbox términos arriba del link -->
+                <!-- Campo: Términos y Condiciones -->
                 <tr>
                     <td class="terms">
                         <input name="termscondition" type="checkbox"> Acepto los términos y condiciones
                     </td>
                 </tr>
 
-                <!-- Link "Olvidaste tu contraseña" -->
+                <!-- Enlace: Recuperar Contraseña -->
                 <tr>
                     <td class="links"><a href="recuperarPassword.html">¿Olvidaste tu contraseña?</a></td>
                 </tr>
 
-                <!-- Botón Ingresar -->
+                <!-- Botón de Envío -->
                 <tr>
                     <td>
                         <button type="submit">Ingresar</button>
                     </td>
                 </tr>
 
-                <!-- Link "No tienes cuenta" al final -->
+                <!-- Enlace: Registro -->
                 <tr>
                     <td class="links">
                         <span>¿No tienes una cuenta? </span><a href="registroClient.html">Regístrate</a>
                     </td>
                 </tr>
 
-                <!-- Espacios para resultados -->
+                <!-- Mensajes de Resultado/Error -->
                 <tr>
                     <td><span id="resultado1" class="mensaje-resultado"></span></td>
                 </tr>
@@ -74,6 +76,8 @@
         </form>
 
     </div>
+
+    <!-- ---------------------------------[ Disclaimer o Pie de Página ]--------------------------------- -->
     <div class="disclaimer">
         <p class="disclaimer">¡Todo lo que Ud. diga o haga en éste sistema podrá ser usado en su contra!</p>
     </div>
@@ -81,7 +85,7 @@
     <div id="app"></div>
     <ul id="listado"></ul>
 
-    <!-- Script a ser ejecutado -->
+    <!-- ---------------------------------[ Scripts ]--------------------------------- -->
     <script src="./js/loginClient.js" type="module"></script>
 </body>
 

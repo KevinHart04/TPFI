@@ -1,10 +1,11 @@
-/* registroClient.css */
+/* ---------------------------------[ Estilos Generales y Reset ]--------------------------------- */
 
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef2f7;
     margin: 0;
     padding: 0;
+    /* Otros estilos generales si son necesarios */
 }
 
 .container {
@@ -16,6 +17,8 @@ body {
     padding: 36px 28px;
 }
 
+/* ---------------------------------[ Títulos ]--------------------------------- */
+
 h1, h2 {
     text-align: center;
     color: #253858;
@@ -23,12 +26,15 @@ h1, h2 {
     font-weight: 600;
 }
 
+/* ---------------------------------[ Formulario y Elementos ]--------------------------------- */
+
 form {
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
+/* Labels */
 label {
     font-weight: 500;
     color: #42526e;
@@ -36,6 +42,7 @@ label {
 }
 
 input[type="text"],
+/* Inputs */
 input[type="email"],
 input[type="password"],
 input[type="date"] {
@@ -53,6 +60,7 @@ input:focus {
     background: #fff;
 }
 
+/* Botón de Envío */
 button[type="submit"] {
     background: #2563eb;
     color: #fff;
@@ -70,6 +78,8 @@ button[type="submit"]:hover {
     background: #1e40af;
 }
 
+/* ---------------------------------[ Mensajes y Responsividad ]--------------------------------- */
+
 .error-message {
     color: #e53e3e;
     font-size: 0.95rem;
@@ -77,6 +87,7 @@ button[type="submit"]:hover {
     margin-bottom: 8px;
 }
 
+/* Diseño Responsivo */
 @media (max-width: 500px) {
     .container {
         padding: 18px 8px;
