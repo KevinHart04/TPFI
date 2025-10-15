@@ -10,34 +10,35 @@
 </head>
 
 <body>
+    <!-- ---------------------------------[ Logo Superior ]--------------------------------- -->
     <img src="./img/HelpDeskGirl.png" alt="Nuestra imagen corporativa" class="logo"> <!-- Corregido -->
-    <div class="ticket-container">
-        <!-- Logo -->
 
-        <!-- Breadcrumb -->
+    <!-- ---------------------------------[ Contenedor Principal ]--------------------------------- -->
+    <div class="ticket-container">
+
+        <!-- ---------------------------------[ Navegación (Breadcrumb) ]--------------------------------- -->
         <ul class="breadcrumb">
             <li><a href="./loginClient.html">Login</a></li> <!-- Corregido -->
             <li>Mis Tickets</li>
         </ul>
 
-        <!-- Título principal -->
+        <!-- ---------------------------------[ Título Principal ]--------------------------------- -->
         <h1>Sistema de Mesa de Ayuda</h1>
 
-        <!-- 🔹 NUEVO: Container para información del usuario (estilizado como card) -->
+        <!-- ---------------------------------[ Sección: Información del Usuario ]--------------------------------- -->
         <div class="user-info-container">
             <h2 class="section-title">Información del Usuario</h2>
             <div id="tituloUsuario" class="user-details">
                 <!-- Este contenido se sobrescribirá dinámicamente con JS -->
-                <!-- Placeholder inicial (se reemplazará) -->
                 <p>Cargando información...</p>
             </div>
         </div>
 
-        <!-- 🔹 NUEVO: Formulario para crear un nuevo ticket -->
+        <!-- ---------------------------------[ Sección: Crear Nuevo Ticket ]--------------------------------- -->
         <div class="new-ticket-container">
             <button id="btn-show-form" class="action-btn">Crear Nuevo Ticket</button>
             <form id="form-new-ticket" class="hidden">
-                <h3 class="section-title">Detalles del Nuevo Ticket</h3>
+                <h3>Detalles del Nuevo Ticket</h3>
                 <textarea id="new-ticket-description" placeholder="Describe tu problema aquí..." required></textarea>
                 <div class="form-actions">
                     <button type="submit" class="action-btn">Guardar Ticket</button>
@@ -48,7 +49,7 @@
         </div>
 
 
-        <!-- 🔹 NUEVO: Container para tickets (estilizado como tabla en un card) -->
+        <!-- ---------------------------------[ Sección: Tabla de Tickets ]--------------------------------- -->
         <div class="tickets-container">
             <h2 class="section-title">Mis Tickets</h2>
             <div id="app">
@@ -70,19 +71,18 @@
                     </tbody>
                 </table>
         
-                <!-- Logout después de la tabla -->
+                <!-- ---------------------------------[ Sección: Cerrar Sesión ]--------------------------------- -->
                 <div class="logout-section">
                     <button id="logout" class="logout-btn">Cerrar Sesión</button>
                 </div>
             </div>
         </div>
 
-        <!-- 🔹 NUEVO: Botón de cierre de sesión (opcional, pero útil) -->
-
-        <!-- Mensajes de error/info (al final) -->
+        <!-- ---------------------------------[ Mensajes Globales ]--------------------------------- -->
         <p id="mensajes"></p>
     </div>
 
+    <!-- ---------------------------------[ Scripts ]--------------------------------- -->
     <script src="./js/listarTicket.js" type="module"></script> <!-- Corregido -->
 </body>
 

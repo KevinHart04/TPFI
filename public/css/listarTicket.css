@@ -1,9 +1,5 @@
-/*-----------------------------------------------
-    listarTicket.css
-    Tema blanco con azul, moderno y claro
------------------------------------------------*/
+/* ---------------------------------[ Estilos Generales y Reset ]--------------------------------- */
 
-/* Reset y tipografía */
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -20,7 +16,8 @@ body {
     margin-top: 30px;
 }
 
-/* Contenedor principal */
+/* ---------------------------------[ Contenedor Principal ]--------------------------------- */
+
 .ticket-container {
     background-color: #ffffff;
     padding: 40px 30px;
@@ -31,7 +28,8 @@ body {
     text-align: center;
 }
 
-/* Breadcrumb */
+/* ---------------------------------[ Navegación (Breadcrumb) ]--------------------------------- */
+
 .breadcrumb {
     list-style: none;
     padding: 0;
@@ -61,7 +59,8 @@ body {
     color: #ccc;
 }
 
-/* Títulos */
+/* ---------------------------------[ Títulos ]--------------------------------- */
+
 .ticket-container h1 {
     margin: 0 0 10px 0;
     color: #0d3b66;
@@ -74,7 +73,8 @@ body {
     font-size: 20px;
 }
 
-/* User Info Card */
+/* ---------------------------------[ Tarjeta de Información de Usuario ]--------------------------------- */
+
 .user-info-container {
     background-color: #ffffff;
     border-left: 4px solid #007bff;
@@ -95,7 +95,8 @@ body {
     color: #007bff;
 }
 
-/* Mensajes de error/info */
+/* ---------------------------------[ Mensajes de Error/Info ]--------------------------------- */
+
 #mensajes {
     margin-top: 15px;
     font-size: 14px;
@@ -104,7 +105,8 @@ body {
     display: block;
 }
 
-/* Logout */
+/* ---------------------------------[ Botón de Cerrar Sesión ]--------------------------------- */
+
 .logout-section {
     text-align: center;
     /* derecha */
@@ -126,7 +128,8 @@ body {
     background-color: #c82333;
 }
 
-/* Tickets: tabla limpia */
+/* ---------------------------------[ Tabla de Tickets ]--------------------------------- */
+
 .tickets-container {
     margin: 20px 0;
     padding: 0;
@@ -172,7 +175,6 @@ body {
     font-style: italic;
 }
 
-/* Botones o links en #app (si aparecen) */
 #app button,
 #app a.button {
     padding: 8px 16px;
@@ -193,7 +195,80 @@ body {
     background-color: #0056b3;
 }
 
-/* Responsive */
+/* ---------------------------------[ Formulario para Nuevo Ticket ]--------------------------------- */
+
+.new-ticket-container {
+    background-color: #f8f9fa;
+    border: 1px solid #e3eaf0;
+    border-radius: 8px;
+    padding: 25px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+#form-new-ticket {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#form-new-ticket.hidden {
+    display: none;
+}
+
+#form-new-ticket h3 {
+    margin: 0 0 5px 0;
+    color: #0d3b66;
+    font-size: 18px;
+    text-align: center;
+}
+
+#new-ticket-description {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Para que el padding no afecte el ancho total */
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    color: #555;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* ---------------------------------[ Diseño Responsivo (Móviles) ]--------------------------------- */
+
 @media (max-width: 600px) {
     .ticket-container {
         width: 95%;
