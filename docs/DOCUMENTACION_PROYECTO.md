@@ -425,5 +425,6 @@ Instrucciones sobre cómo desplegar el proyecto en un entorno de producción. Me
 - Node.js - El entorno de ejecución para el backend.
 - Express - El framework para el servidor backend.
 - <!-- !Pedirle a kevin todo esto -->
+  -jijo
 
 ---
