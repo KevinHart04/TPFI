@@ -36,7 +36,7 @@ export const addTicketDB = async (ticket) => {
   try {
     const params = {
       TableName: "ticket",
-      Item: ticket,
+      Item: ticket, // El ticket ya viene con id_ticket desde el controller
       ConditionExpression: "attribute_not_exists(id)"
     };
     await docClient.put(params).promise();

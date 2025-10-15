@@ -36,7 +36,7 @@ export const addTicket = async (req, res) => {
 
     // Construimos el objeto ticket completo en el controlador
     const nuevoTicket = {
-      id: uuidv4(), // Generamos un ID único
+      id: uuidv4(), // La clave primaria en la tabla es 'id'
       clienteID: id_cliente,
       descripcion: descripcion,
       solucion: "", // Inicialmente sin solución
@@ -44,7 +44,7 @@ export const addTicket = async (req, res) => {
       fecha_apertura: new Date().toLocaleDateString('es-AR')
     };
     const creado = await addTicketDB(nuevoTicket);
-    res.json({ response: "OK", data: creado });
+    res.json({ response: "OK", ticket: creado });
   } catch (error) {
     console.error("Error en addTicket:", error);
     res.status(500).json({ response: "ERROR", message: "Error interno del servidor" });
@@ -57,10 +57,10 @@ export const addTicket = async (req, res) => {
  */
 export const getTicket = async (req, res) => {
   try {
-    const { id_ticket } = req.body;
-    if (!id_ticket) return res.status(400).json({ response: "ERROR", message: "Falta id_ticket" });
+    const { id } = req.body; // Buscamos por 'id'
+    if (!id) return res.status(400).json({ response: "ERROR", message: "Falta id" });
 
-    const ticket = await getTicketByIdDB(id_ticket);
+    const ticket = await getTicketByIdDB(id);
     if (!ticket) return res.status(404).json({ response: "ERROR", message: "Ticket no encontrado" });
 
     res.json({ response: "OK", data: ticket });
@@ -76,11 +76,18 @@ export const getTicket = async (req, res) => {
  */
 export const updateTicket = async (req, res) => {
   try {
-    const ticket = req.body;
-    if (!ticket.id_ticket) return res.status(400).json({ response: "ERROR", message: "Falta id_ticket" });
+    // Extraemos solo los campos que se pueden actualizar para mayor seguridad
+    const { id, descripcion, estado } = req.body;
+    if (!id) return res.status(400).json({ response: "ERROR", message: "Falta id" });
 
-    const actualizado = await updateTicketDB(ticket);
-    res.json({ response: "OK", data: actualizado });
+    // Construimos el objeto a actualizar
+    const ticketToUpdate = {
+      id,
+      descripcion,
+      estado
+    };
+    const actualizado = await updateTicketDB(ticketToUpdate);
+    res.json({ response: "OK", ticket: actualizado });
   } catch (error) {
     console.error("Error en updateTicket:", error);
     res.status(500).json({ response: "ERROR", message: "Error interno del servidor" });

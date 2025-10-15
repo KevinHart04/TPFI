@@ -35,7 +35,7 @@ log.info("📦 DynamoService: DynamoDB configurado correctamente.");
 export async function getClienteByContacto(contacto) {
   try {
     const params = {
-      TableName: "cliente",
+      TableName: "Cliente",
       FilterExpression: "contacto = :c",
       ExpressionAttributeValues: { ":c": contacto }
     };
@@ -55,7 +55,7 @@ export async function getClienteByContacto(contacto) {
 export async function getClienteById(id) {
   try {
     const params = {
-      TableName: "cliente",
+      TableName: "Cliente",
       Key: { id }
     };
     const result = await docClient.get(params).promise();
@@ -70,7 +70,7 @@ export async function getClienteById(id) {
 export async function addCliente(cliente) {
   try {
     const params = {
-      TableName: "cliente",
+      TableName: "Cliente",
       Item: cliente,
       ConditionExpression: 'attribute_not_exists(contacto)'
     };
@@ -86,7 +86,7 @@ export async function addCliente(cliente) {
 export async function updateCliente(cliente) {
   try {
     const params = {
-      TableName: "cliente",
+      TableName: "Cliente",
       Key: { contacto: cliente.contacto },
       UpdateExpression: "SET #n = :n, #p = :p, #a = :a, #r = :r",
       ExpressionAttributeNames: {
@@ -115,7 +115,7 @@ export async function updateCliente(cliente) {
 export async function resetClientePassword(id, newPassword) {
   try {
     const params = {
-      TableName: "cliente",
+      TableName: "Cliente",
       Key: { id },
       UpdateExpression: "SET #p = :p",
       ExpressionAttributeNames: { "#p": "password" },
@@ -131,76 +131,21 @@ export async function resetClientePassword(id, newPassword) {
   }
 }
 
-// -------------------------------- Funciones de Tickets ---------------------------------------
-
-export async function getTicketsByClienteId(id_cliente) {
+/**
+ * Escanea y devuelve todos los items de una tabla específica.
+ * @param {string} tableName - El nombre de la tabla a escanear.
+ * @returns {Promise<Array>} - Una promesa que resuelve a un array de items.
+ */
+export async function scanTable(tableName) {
   try {
     const params = {
-      TableName: "ticket",
-      FilterExpression: "clienteID = :c",
-      ExpressionAttributeValues: { ":c": id_cliente }
+      TableName: tableName,
     };
     const result = await docClient.scan(params).promise();
-    log.info(`🔎 getTicketsByClienteId: encontrados ${result.Items.length} ticket(s) para ID ${id_cliente}`);
+    log.info(`🔎 scanTable: encontrados ${result.Items.length} items en la tabla ${tableName}`);
     return result.Items;
   } catch (error) {
-    log.error("❌ Error en getTicketsByClienteId:", error);
-    throw error;
-  }
-}
-
-export async function addTicket(ticket) {
-  try {
-    const params = {
-      TableName: "ticket",
-      Item: ticket,
-      ConditionExpression: 'attribute_not_exists(id_ticket)'
-    };
-    await docClient.put(params).promise();
-    log.success(`✅ addTicket: Ticket creado para cliente ${ticket.clienteID}`);
-    return ticket;
-  } catch (error) {
-    log.error("❌ Error en addTicket:", error);
-    throw error;
-  }
-}
-
-export async function getTicketById(id_ticket) {
-  try {
-    const params = {
-      TableName: "ticket",
-      Key: { id_ticket }
-    };
-    const result = await docClient.get(params).promise();
-    log.info(`🔎 getTicketById: Ticket encontrado:`, result.Item);
-    return result.Item || null;
-  } catch (error) {
-    log.error("❌ Error en getTicketById:", error);
-    throw error;
-  }
-}
-
-export async function updateTicket(ticket) {
-  try {
-    const params = {
-      TableName: "ticket",
-      Key: { id_ticket: ticket.id_ticket },
-      UpdateExpression: "SET #d = :d, #s = :s",
-      ExpressionAttributeNames: {
-        "#d": "descripcion",
-        "#s": "estado"
-      },
-      ExpressionAttributeValues: {
-        ":d": ticket.descripcion,
-        ":s": ticket.estado
-      },
-      ReturnValues: "ALL_NEW"
-    };
-    const data = await docClient.update(params).promise();
-    log.success(`✅ updateTicket: Ticket actualizado ID ${ticket.id_ticket}`);
-    return data.Attributes;
-  } catch (error) {
-    log.error("❌ Error en updateTicket:", error);
+    log.error(`❌ Error en scanTable para la tabla ${tableName}:`, error);
     throw error;
   }
 }
