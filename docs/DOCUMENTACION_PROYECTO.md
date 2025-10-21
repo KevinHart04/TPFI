@@ -86,13 +86,6 @@ Una guía paso a paso sobre cómo instalar el proyecto.
     cp .env.example .env
     ```
 
-    Ejemplo de variables:
-
-    ```
-    DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase"
-    API_KEY="tu_api_key_secreta"
-    ```
-
 ---
 
 ## Uso
@@ -407,16 +400,6 @@ Modifica la descripción o el estado de un ticket existente.
   }
   ```
 
-## Esquema de la Base de Datos
-
-Descripción de las tablas/colecciones principales, sus columnas/campos y las relaciones entre ellas. Puedes incluir un Diagrama Entidad-Relación.
-
----
-
-## Despliegue
-
-Instrucciones sobre cómo desplegar el proyecto en un entorno de producción. Menciona plataformas (ej. Vercel, Heroku, AWS) y los pasos necesarios.
-
 ---
 
 ## Construido Con
@@ -424,7 +407,13 @@ Instrucciones sobre cómo desplegar el proyecto en un entorno de producción. Me
 - HTML, CSS y JS para el frontend.
 - Node.js - El entorno de ejecución para el backend.
 - Express - El framework para el servidor backend.
-- <!-- !Pedirle a kevin todo esto -->
-  -jijo
+- AWS-sdk - El SDK para interactuar con servicios de AWS.
+- Axios - Una biblioteca para hacer solicitudes HTTP.
+- bcrypt - Una biblioteca para encriptar contraseñas.
+- chalk - Una biblioteca para formatear texto en la consola.
+- dotenv - Una biblioteca para cargar variables de entorno desde un archivo .env.
+- cors - Una biblioteca para manejar las solicitudes de origen cruzado.
+- crypto - Una biblioteca para generar hashes criptográficos.
+- uuid - Una biblioteca para generar identificadores únicos.
 
 ---
