@@ -1,95 +1,175 @@
+/*-----------------------------------------------
+    loginClient.css
+    Tema blanco con azul, centrado y moderno
+-----------------------------------------------*/
+
 /* ---------------------------------[ Estilos Generales y Reset ]--------------------------------- */
 
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #eef2f7;
     margin: 0;
-    padding: 0;
-    /* Otros estilos generales si son necesarios */
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Cambiado para centrar el contenido verticalmente */
+    align-items: center;
+    height: 100vh;
 }
 
-.container {
-    max-width: 380px;
-    margin: 48px auto;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-    padding: 36px 28px;
+.logo {
+    width: 150px;
+    margin-top: 30px;
+}
+.disclaimer
+{
+    font-size: 11px;
+    color: #555;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* ---------------------------------[ Contenedor Principal ]--------------------------------- */
+
+.login-container {
+    background-color: #ffffffe6;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    width: 400px;
+    text-align: center;
+}
+
+.login-container .logo {
+    width: 120px;
+    margin-bottom: 75px;
 }
 
 /* ---------------------------------[ Títulos ]--------------------------------- */
 
-h1, h2 {
-    text-align: center;
-    color: #253858;
-    margin-bottom: 22px;
-    font-weight: 600;
+.login-container h1 {
+    margin: 0;
+    color: #0d3b66;
+    font-size: 24px;
+    margin-bottom: 5px;
 }
 
-/* ---------------------------------[ Formulario y Elementos ]--------------------------------- */
+.login-container h2 {
+    margin: 0 0 25px 0;
+    color: #007bff;
+    font-size: 20px;
+}
+
+/* ---------------------------------[ Formulario y Estructura de Tabla ]--------------------------------- */
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    align-items: center;
+    width: 100%;
 }
 
-/* Labels */
-label {
-    font-weight: 500;
-    color: #42526e;
-    margin-bottom: 6px;
+form table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-input[type="text"],
-/* Inputs */
-input[type="email"],
-input[type="password"],
-input[type="date"] {
-    padding: 11px;
-    border: 1px solid #d1d5db;
-    border-radius: 5px;
-    font-size: 1rem;
-    background: #f4f6fb;
-    transition: border-color 0.2s;
-}
-
-input:focus {
-    border-color: #2563eb;
-    outline: none;
-    background: #fff;
-}
-
-/* Botón de Envío */
-button[type="submit"] {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 13px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 8px;
-}
-
-button[type="submit"]:hover {
-    background: #1e40af;
-}
-
-/* ---------------------------------[ Mensajes y Responsividad ]--------------------------------- */
-
-.error-message {
-    color: #e53e3e;
-    font-size: 0.95rem;
-    margin-top: -6px;
+form tr {
+    display: flex;
+    align-items: center;
     margin-bottom: 8px;
 }
 
-/* Diseño Responsivo */
-@media (max-width: 500px) {
-    .container {
-        padding: 18px 8px;
-    }
+form td {
+    padding: 8px 0;
+}
+
+/* ---------------------------------[ Elementos de Formulario (Inputs, Labels, etc.) ]--------------------------------- */
+
+form td:first-child {
+    flex: 1;
+    text-align: left;
+    padding-right: 10px;
+    width: auto;
+}
+
+.form-label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    color: #0d3b66;
+}
+
+.txt {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.txt:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.terms {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    width: 100%;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* ---------------------------------[ Enlaces y Mensajes ]--------------------------------- */
+
+.links {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.links a {
+    color: #007bff;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+#resultado1,
+#resultado2 {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    width: 100%;
 }
