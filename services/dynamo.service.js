@@ -15,16 +15,17 @@
  **********************************************************************************************/
 
 import AWS from 'aws-sdk';
+import 'dotenv/config'; // Carga las variables de entorno desde .env
 import log from '../utils/logger.js';
-import accessKeyId from '../../accessKeyId.js';
-import secretAccessKey from '../../secretAccessKey.js';
 
 // -------------------------------- Configuración de AWS DynamoDB --------------------------------
 AWS.config.update({
-  region: "us-east-1",
-  endpoint: "http://dynamodb.us-east-1.amazonaws.com",
-  accessKeyId,
-  secretAccessKey
+  // Usa las variables de entorno, con valores por defecto si no están definidas
+  region: process.env.AWS_REGION || "us-east-1",
+  // El endpoint es opcional si usas AWS real, pero útil para DynamoDB local o emuladores
+  endpoint: process.env.AWS_DYNAMODB_ENDPOINT || "http://dynamodb.us-east-1.amazonaws.com",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
 export const docClient = new AWS.DynamoDB.DocumentClient();
@@ -35,7 +36,7 @@ log.info("📦 DynamoService: DynamoDB configurado correctamente.");
 export async function getClienteByContacto(contacto) {
   try {
     const params = {
-      TableName: "Cliente",
+      TableName: "cliente",
       FilterExpression: "contacto = :c",
       ExpressionAttributeValues: { ":c": contacto }
     };
@@ -55,7 +56,7 @@ export async function getClienteByContacto(contacto) {
 export async function getClienteById(id) {
   try {
     const params = {
-      TableName: "Cliente",
+      TableName: "cliente",
       Key: { id }
     };
     const result = await docClient.get(params).promise();
@@ -70,7 +71,7 @@ export async function getClienteById(id) {
 export async function addCliente(cliente) {
   try {
     const params = {
-      TableName: "Cliente",
+      TableName: "cliente",
       Item: cliente,
       ConditionExpression: 'attribute_not_exists(contacto)'
     };
@@ -86,7 +87,7 @@ export async function addCliente(cliente) {
 export async function updateCliente(cliente) {
   try {
     const params = {
-      TableName: "Cliente",
+      TableName: "cliente",
       Key: { contacto: cliente.contacto },
       UpdateExpression: "SET #n = :n, #p = :p, #a = :a, #r = :r",
       ExpressionAttributeNames: {
@@ -115,7 +116,7 @@ export async function updateCliente(cliente) {
 export async function resetClientePassword(id, newPassword) {
   try {
     const params = {
-      TableName: "Cliente",
+      TableName: "cliente",
       Key: { id },
       UpdateExpression: "SET #p = :p",
       ExpressionAttributeNames: { "#p": "password" },
