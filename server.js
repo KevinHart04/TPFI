@@ -1,9 +1,10 @@
 import express from "express";
-import log from "./utils/logger.js";
 import cors from "cors";
 import 'dotenv/config';
 import clientesRouter from "./routes/clientes.routes.js";
 import ticketsRouter from "./routes/tickets.routes.js";
+import chalk from "chalk";
+import log from "./utils/logger.js";
 
 
 const app = express();
@@ -24,5 +25,5 @@ app.get("/api/cliente", (req, res) => {
 
 // ---------------------------------[ Servidor ]---------------------------------
 app.listen(PORT, () => {
-  log.success(`Servidor escuchando en http://localhost:${PORT}`);
+  log.success(`Servidor escuchando en `, chalk.yellowBright(`http://localhost:${PORT}`));
 });

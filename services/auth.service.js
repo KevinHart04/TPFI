@@ -39,6 +39,12 @@ export const registrarClienteService = async (cliente) => {
     // Generar ID único
     cliente.id = uuidv4();
 
+    // Establecer valores por defecto
+    cliente.fecha_alta = new Date().toISOString();
+    cliente.activo = true;
+    cliente.registrado = true;
+    cliente.fecha_ultimo_ingreso = null; // Se establecerá en el primer login
+
     // Hashear contraseña
     cliente.password = await bcrypt.hash(cliente.password, 10);
     return await addCliente(cliente); // tu función de DynamoService

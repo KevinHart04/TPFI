@@ -3,6 +3,7 @@
  * Servicios relacionados a tickets de clientes
  */
 
+import { ScanCommand, PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient } from "./dynamo.service.js"; // Asegurate de exportar docClient desde tu DynamoService
 import log from "../utils/logger.js";
 
@@ -18,7 +19,7 @@ export const getTicketsByClienteId = async (id_cliente) => {
       FilterExpression: "clienteID = :c",
       ExpressionAttributeValues: { ":c": id_cliente }
     };
-    const result = await docClient.scan(params).promise();
+    const result = await docClient.send(new ScanCommand(params));
     log.info(`🔎 getTicketsByClienteId: encontrados ${result.Items.length} ticket(s) para ID ${id_cliente}`);
     return result.Items;
   } catch (error) {
@@ -39,7 +40,7 @@ export const addTicketDB = async (ticket) => {
       Item: ticket, // El ticket ya viene con id_ticket desde el controller
       ConditionExpression: "attribute_not_exists(id)"
     };
-    await docClient.put(params).promise();
+    await docClient.send(new PutCommand(params));
     log.success(`✅ addTicketDB: Ticket creado correctamente para cliente ${ticket.clienteID}`);
     return ticket;
   } catch (error) {
@@ -59,7 +60,7 @@ export const getTicketByIdDB = async (id) => {
       TableName: "ticket",
       Key: { id }
     };
-    const result = await docClient.get(params).promise();
+    const result = await docClient.send(new GetCommand(params));
     log.info(`🔎 getTicketByIdDB: resultado para ID ${id}:`, result.Item);
     return result.Item || null;
   } catch (error) {
@@ -89,7 +90,7 @@ export const updateTicketDB = async (ticket) => {
       },
       ReturnValues: "ALL_NEW"
     };
-    const result = await docClient.update(params).promise();
+    const result = await docClient.send(new UpdateCommand(params));
     log.success(`✅ updateTicketDB: Ticket actualizado ID ${ticket.id}`);
     return result.Attributes;
   } catch (error) {

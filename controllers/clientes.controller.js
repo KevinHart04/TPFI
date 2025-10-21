@@ -4,6 +4,9 @@
  */
 
 import { validarLogin, registrarClienteService, resetPasswordService } from "../services/auth.service.js";
+import { scanTable, updateClienteLastLogin } from "../services/dynamo.service.js";
+import log from "../utils/logger.js";
+import chalk from "chalk";
 
 /**
  * POST /clientes/login
@@ -13,7 +16,7 @@ export const loginCliente = async (req, res) => {
     try {
         const { contacto, password } = req.body;
 
-        console.log(`🔑 Intento de login: contacto(${contacto})`); // ✅ seguro, no mostramos password
+        log.success(`Intento de login: contacto(${contacto})`);
 
         if (!contacto || !password) {
             return res.status(400).json({ response: "ERROR", message: "Faltan datos de login" });
@@ -25,14 +28,18 @@ export const loginCliente = async (req, res) => {
             return res.status(401).json({ response: "ERROR", message: "Credenciales inválidas" });
         }
 
-        console.log(`✅ Login exitoso para: ${cliente.contacto}`); // Log de sesión válida
+        // Actualizar fecha de último ingreso
+        const fechaIngreso = new Date().toISOString();
+        await updateClienteLastLogin(cliente.id, fechaIngreso);
+
+        log.success(`Login exitoso para:`, chalk.yellow(cliente.contacto)); // Log de sesión válida
 
         res.json({
             response: "OK",
             id: cliente.id,
             contacto: cliente.contacto,
             nombre: cliente.nombre || "Usuario", // ✅ Usamos un valor por defecto si 'nombre' es undefined
-            fecha_ultimo_ingreso: new Date().toISOString()
+            fecha_ultimo_ingreso: fechaIngreso
         });
 
     } catch (error) {
@@ -49,8 +56,8 @@ export const registrarCliente = async (req, res) => {
     try {
         const cliente = req.body;
 
-        if (!cliente.contacto || !cliente.password) {
-            return res.status(400).json({ response: "ERROR", message: "Faltan datos" });
+        if (!cliente.nombre || !cliente.contacto || !cliente.password) {
+            return res.status(400).json({ response: "ERROR", message: "Faltan datos: nombre, contacto y password son requeridos" });
         }
 
         const creado = await registrarClienteService(cliente);
@@ -73,4 +80,19 @@ export const resetPassword = async (req, res) => {
     console.error(error);
     res.status(500).json({ response: "ERROR", message: "Error interno del servidor" });
   }
+};
+
+/**
+ * GET /clientes/listar
+ * Listar todos los clientes
+ */
+export const listarClientes = async (req, res) => {
+    try {
+        log.info("Solicitud para listar todos los clientes");
+        const clientes = await scanTable('cliente');
+        res.json({ response: "OK", data: clientes });
+    } catch (error) {
+        log.error("Error en listarClientes:", error);
+        res.status(500).json({ response: "ERROR", message: "Error interno del servidor" });
+    }
 };

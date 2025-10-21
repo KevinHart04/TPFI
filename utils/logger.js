@@ -6,10 +6,10 @@ import chalk from 'chalk';
  * Permite mostrar mensajes con diferentes niveles (info, warn, error, success)
  */
 const log = {
-  info: (msg) => console.log(`${chalk.blue('[INFO]:')} ${chalk.white(msg)}`),
-  success: (msg) => console.log(`${chalk.green('[OK]:')} ${chalk.white(msg)}`),
-  warn: (msg) => console.log(`${chalk.yellow('[WARN]:')} ${chalk.white(msg)}`),
-  error: (msg) => console.log(`${chalk.red('[ERROR]:')} ${chalk.white(msg)}`),
+  info: (...msgs) => console.log(`${chalk.blue('[INFO]:')}`, ...msgs),
+  success: (...msgs) => console.log(`${chalk.green('[OK]:')}`, ...msgs),
+  warn: (...msgs) => console.log(`${chalk.yellow('[WARN]:')}`, ...msgs),
+  error: (...msgs) => console.log(`${chalk.red('[ERROR]:')}`, ...msgs),
   custom: (label, color, msg) =>
     console.log(`${chalk[color].bold(label)} ${chalk.white(msg)}`),
 };
