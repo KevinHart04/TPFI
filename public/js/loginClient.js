@@ -1,11 +1,4 @@
-// -----------------------------------------------------------------------------
-// loginClient.js - Versión mejorada
-// -----------------------------------------------------------------------------
-// Permite iniciar sesión en tres modos distintos (LOCAL, TYPICODE, AWS)
-// usando la constante MODE. Ahora se usa "contacto" (correo electrónico)
-// en lugar de "id", y guarda la sesión en sessionStorage en lugar de
-// pasar parámetros por la URL.
-// -----------------------------------------------------------------------------
+// [+] Logica de login del cliente
 
 const formE1 = document.querySelector('.form');
 
@@ -38,9 +31,7 @@ formE1.addEventListener('submit', (event) => {
     return;
   }
 
-  // ---------------------------------------------------------------------------
-  // 3. Definir las URLs y modo de conexión
-  // ---------------------------------------------------------------------------
+//-Definir el modo de operación y la API correspondiente
   const MODE = 'LOCAL'; // Cambiar a 'AWS' o 'TYPICODE' según el entorno
 
   const RESTAPI = {
@@ -54,11 +45,8 @@ formE1.addEventListener('submit', (event) => {
   let API = '';
   let APIoptions = {};
 
-  // ---------------------------------------------------------------------------
-  // 4. Configurar la solicitud según el modo seleccionado
-  // ---------------------------------------------------------------------------
+//-configurar la solicitud según el modo
   if (MODE === 'LOCAL') {
-    console.log('🌐 Modo LOCAL: usando servidor Express y db.json');
     API = RESTAPI.loginCliente;
     APIoptions = {
       method: 'POST',
@@ -82,16 +70,14 @@ formE1.addEventListener('submit', (event) => {
     APIoptions = { method: 'GET' };
   }
 
-  // ---------------------------------------------------------------------------
-  // 5. Enviar solicitud y procesar respuesta
-  // ---------------------------------------------------------------------------
+//Envia la solicitud al controlador correspondiente
   fetch(API, APIoptions)
     .then((res) => res.json())
     .then((response) => {
-      console.log('📩 Respuesta del servidor:', response);
+      console.log('Respuesta del servidor:', response);
 
       if (response.response === 'OK') {
-        console.log(`✅ Login exitoso: ${response.nombre}`);
+        console.log(`Login exitoso: ${response.nombre}`);
 
         // ---------------------------------------------------------------------
         // 6. Guardar los datos del usuario en sessionStorage
@@ -113,7 +99,7 @@ formE1.addEventListener('submit', (event) => {
       }
     })
     .catch((err) => {
-      console.error('❌ Error en la solicitud:', err);
+      console.error('Error en la solicitud:', err);
       mostrarMensaje('No se pudo conectar con el servidor.', 'RED');
     });
 });

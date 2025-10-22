@@ -1,19 +1,6 @@
-/**********************************************************************************************
- * listarTicket.js — versión con búsqueda por ID de cliente
- * ---------------------------------------------------------------------------------------------
- * UADER - FCyT - Ingeniería de Software I
- * Caso de estudio: Mesa de Ayuda
- *
- * Adaptación 2025:
- * - Ahora busca tickets usando el ID del cliente (más seguro y confiable).
- * - Mantiene uso de sessionStorage para no exponer datos en la URL.
- * - ✅ CORRECCIÓN: Selector corregido de "#usuario" a "#tituloUsuario" para coincidir con el HTML.
- * - ✅ CORRECCIÓN: Toda la manipulación del DOM (incluyendo info de usuario) ahora está dentro de DOMContentLoaded para evitar errores de "null".
- **********************************************************************************************/
+// [+] Lógica para listar y crear tickets desde el cliente
 
-/*---------------------------------------------------------------------------------------------
-    0️⃣  Función auxiliar para escapar HTML (prevención de XSS)
----------------------------------------------------------------------------------------------*/
+//- Función para escapar HTML y prevenir XSS
 function escapeHtml(text) {
   const map = {
     '&': '&amp;',
@@ -25,9 +12,7 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-/*---------------------------------------------------------------------------------------------
-    1️⃣  Recuperar datos del usuario autenticado desde sessionStorage
----------------------------------------------------------------------------------------------*/
+//-Recuperar datos del usuario desde sessionStorage
 
 const usuario = JSON.parse(sessionStorage.getItem("usuario") || "{}");
 
@@ -35,56 +20,43 @@ const usuario = JSON.parse(sessionStorage.getItem("usuario") || "{}");
 const contacto = usuario.contacto;
 const nombre = usuario.nombre;
 const fecha_ultimo_ingreso = usuario.fecha_ultimo_ingreso;
+const id_cliente = usuario.id;
 
-/* 🔹 NUEVO: agregamos el ID del usuario */
-const id_cliente = usuario.id; // ✅ ID del cliente (debe haberse guardado al hacer login)
-
-// Validar si hay sesión activa
+// Validación básica, redirigir si no hay usuario
 if (!contacto || !nombre || !id_cliente) {
   alert("Debe iniciar sesión primero.");
-  window.location.href = "./loginClient.html"; // Corregido
+  window.location.href = "./loginClient.html";
 }
 
-/*---------------------------------------------------------------------------------------------
-    2️⃣  Referencias a elementos del DOM donde se mostrarán los tickets
-    (Se inicializan dentro de DOMContentLoaded para seguridad)
----------------------------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------------------------
-    3️⃣  Función para mostrar información del usuario autenticado en pantalla
----------------------------------------------------------------------------------------------*/
+//-Muestra la información del usuario en el DOM
 function mostrarInfoUsuario() {
-    const tituloUsuario = document.querySelector("#tituloUsuario"); // ✅ CORREGIDO: Selector correcto "#tituloUsuario"
+    const tituloUsuario = document.querySelector("#tituloUsuario"); 
     
     if (!tituloUsuario) {
-        console.error("❌ Elemento #tituloUsuario no encontrado en el DOM");
+        console.error("[x] Elemento #tituloUsuario no encontrado en el DOM");
         return;
     }
     
     tituloUsuario.innerHTML = `
       <strong>Usuario:</strong> ${escapeHtml(nombre)} (${escapeHtml(contacto)})<br>
-      <strong>ID Cliente:</strong> ${escapeHtml(id_cliente)}<br> <!-- 🔹 NUEVO: mostramos el ID -->
+      <strong>ID Cliente:</strong> ${escapeHtml(id_cliente)}<br> 
       <strong>Último ingreso:</strong> ${escapeHtml(fecha_ultimo_ingreso)}
     `;
 }
 
-/*---------------------------------------------------------------------------------------------
-    4️⃣  Definir la URL del endpoint de tickets en el servidor local
----------------------------------------------------------------------------------------------*/
+// Definir las rutas de la API REST
 const RESTAPI = {
   listarTicket: "http://localhost:3000/tickets/listarTicket",
   addTicket: "http://localhost:3000/tickets/addTicket",
 };
 
-/*---------------------------------------------------------------------------------------------
-    5️⃣  Función para obtener y mostrar los tickets del usuario logueado
----------------------------------------------------------------------------------------------*/
+//-Función para obtener y mostrar los tickets del cliente
 
 async function obtenerTickets() {
     const tbody = document.querySelector("#tickets-body");
 
     if (!tbody) {
-        console.error("❌ tbody no encontrado");
+        console.error("[x] tbody no encontrado");
         return;
     }
 
@@ -124,18 +96,14 @@ async function obtenerTickets() {
     }
 }
 
-/*---------------------------------------------------------------------------------------------
-    6️⃣  Cargar la página automáticamente al abrir: info de usuario + tickets
----------------------------------------------------------------------------------------------*/
+//-Cargar la información del usuario y los tickets al cargar el DOM
 window.addEventListener("DOMContentLoaded", function() {
-    mostrarInfoUsuario(); // ✅ Ahora dentro de DOMContentLoaded
-    obtenerTickets();     // ✅ Ya estaba, pero ahora todo el flujo es seguro
-    setupNewTicketForm(); // ✅ NUEVO: Configurar el formulario de nuevo ticket
+    mostrarInfoUsuario(); 
+    obtenerTickets();     
+    setupNewTicketForm();
 });
 
-/*---------------------------------------------------------------------------------------------
-    7️⃣  (Opcional) Botón de cierre de sesión
----------------------------------------------------------------------------------------------*/
+//-Lógica para el botón de logout
 window.addEventListener("DOMContentLoaded", function() {
     const logoutBtn = document.querySelector("#logout");
     if (logoutBtn) {
@@ -146,9 +114,7 @@ window.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-/*---------------------------------------------------------------------------------------------
-    8️⃣  NUEVO: Lógica para el formulario de creación de tickets
----------------------------------------------------------------------------------------------*/
+//-Logica para el formulario de nuevo ticket
 function setupNewTicketForm() {
     const btnShowForm = document.getElementById('btn-show-form');
     const btnCancel = document.getElementById('btn-cancel-new-ticket');
@@ -188,8 +154,8 @@ function setupNewTicketForm() {
             if (data.response === 'OK') {
                 messageDiv.textContent = 'Ticket creado con éxito.';
                 messageDiv.style.color = 'green';
-                setTimeout(() => btnCancel.click(), 1500); // Oculta el form y limpia
-                obtenerTickets(); // Recarga la lista de tickets
+                setTimeout(() => btnCancel.click(), 1500);
+                obtenerTickets();
             } else {
                 messageDiv.textContent = data.message || 'Error al crear el ticket.';
             }

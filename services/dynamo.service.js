@@ -1,27 +1,43 @@
 // [+] Capa de servicio para interactuar con AWS DynamoDB
 
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, DescribeTableCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import 'dotenv/config'; // Carga las variables de entorno desde .env
 import log from '../utils/logger.js';
 
-//- Configuración del cliente de DynamoDB
-const client = new DynamoDBClient({
-  // Usa las variables de entorno, con valores por defecto si no están definidas
-  region: process.env.AWS_REGION || "us-east-1",
-  endpoint: process.env.AWS_DYNAMODB_ENDPOINT || "http://dynamodb.us-east-1.amazonaws.com",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+const initializeDynamoDB = async () => {
+  try {
+    //- Configuración del cliente de DynamoDB
+    const client = new DynamoDBClient({
+      // Usa las variables de entorno, con valores por defecto si no están definidas
+      region: process.env.AWS_REGION || "us-east-1",
+      endpoint: process.env.AWS_DYNAMODB_ENDPOINT || "http://dynamodb.us-east-1.amazonaws.com",
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      }
+    });
+
+    // "Ping" a la tabla 'cliente' para verificar la conexión y credenciales
+    const command = new DescribeTableCommand({ TableName: "cliente" });
+    await client.send(command);
+    log.success("DynamoService: Conexión con AWS DynamoDB y tabla 'cliente' verificada correctamente.");
+
+    const marshallOptions = { removeUndefinedValues: true };
+    const translateConfig = { marshallOptions };
+
+    // Traduce el cliente de bajo nivel a uno de más alto nivel
+    return DynamoDBDocumentClient.from(client, translateConfig);
+
+  } catch (error) {
+    log.error("DynamoService: Falló la conexión con DynamoDB. Verifica las credenciales, la configuración de red y que la tabla 'cliente' exista.", error.message);
+    // Si la conexión falla, la aplicación no puede continuar.
+    process.exit(1);
   }
-});
+};
 
-const marshallOptions = { removeUndefinedValues: true };
-const translateConfig = { marshallOptions };
-
-// Traduce el cliente de bajo nivel a uno de más alto nivel
-export const docClient = DynamoDBDocumentClient.from(client, translateConfig);
-log.info("DynamoService: DynamoDB configurado correctamente.");
+// Se inicializa el cliente de forma asíncrona y se exporta la instancia.
+export const docClient = await initializeDynamoDB();
 
 // -------------------------------- Funciones de Cliente ----------------------------------------
 

@@ -1,4 +1,4 @@
-//Configuración de la aplicación Express
+//[+] Configuración de la aplicación Express
 
 import express from "express";
 import path from "path";

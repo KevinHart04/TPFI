@@ -1,3 +1,4 @@
+// [+] Rutas para gestión de tickets
 import { Router } from "express";
 import { listarTickets, addTicket, getTicket, updateTicket } from "../controllers/tickets.controller.js";
 
