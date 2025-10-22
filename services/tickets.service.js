@@ -1,10 +1,8 @@
-/**
- * tickets.service.js
- * Servicios relacionados a tickets de clientes
- */
+// [+] Servicios para la gestión de tickets en DynamoDB
 
 import { ScanCommand, PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { docClient } from "./dynamo.service.js"; // Asegurate de exportar docClient desde tu DynamoService
+import { docClient } from "./dynamo.service.js"; 
+import { escapeHtml } from "../utils/sanitizer.js";
 import log from "../utils/logger.js";
 
 /**
@@ -20,10 +18,10 @@ export const getTicketsByClienteId = async (id_cliente) => {
       ExpressionAttributeValues: { ":c": id_cliente }
     };
     const result = await docClient.send(new ScanCommand(params));
-    log.info(`🔎 getTicketsByClienteId: encontrados ${result.Items.length} ticket(s) para ID ${id_cliente}`);
+    log.info(`getTicketsByClienteId: encontrados ${result.Items.length} ticket(s) para ID ${id_cliente}`);
     return result.Items;
   } catch (error) {
-    log.error("❌ Error en getTicketsByClienteId:", error);
+    log.error("Error en getTicketsByClienteId:", error);
     throw error;
   }
 };
@@ -35,16 +33,19 @@ export const getTicketsByClienteId = async (id_cliente) => {
  */
 export const addTicketDB = async (ticket) => {
   try {
+    // Se sanitizan los inputs para prevenir XSS antes de almacenar
+    ticket.descripcion = escapeHtml(ticket.descripcion);
+
     const params = {
       TableName: "ticket",
       Item: ticket, // El ticket ya viene con id_ticket desde el controller
       ConditionExpression: "attribute_not_exists(id)"
     };
     await docClient.send(new PutCommand(params));
-    log.success(`✅ addTicketDB: Ticket creado correctamente para cliente ${ticket.clienteID}`);
+    log.success(`addTicketDB: Ticket creado correctamente para cliente ${ticket.clienteID}`);
     return ticket;
   } catch (error) {
-    log.error("❌ Error en addTicketDB:", error);
+    log.error("Error en addTicketDB:", error);
     throw error;
   }
 };
@@ -61,10 +62,10 @@ export const getTicketByIdDB = async (id) => {
       Key: { id }
     };
     const result = await docClient.send(new GetCommand(params));
-    log.info(`🔎 getTicketByIdDB: resultado para ID ${id}:`, result.Item);
+    log.info(`getTicketByIdDB: resultado para ID ${id}:`, result.Item);
     return result.Item || null;
   } catch (error) {
-    log.error("❌ Error en getTicketByIdDB:", error);
+    log.error("Error en getTicketByIdDB:", error);
     throw error;
   }
 };
@@ -76,6 +77,10 @@ export const getTicketByIdDB = async (id) => {
  */
 export const updateTicketDB = async (ticket) => {
   try {
+    // Se sanitizan los inputs para prevenir XSS antes de actualizar
+    ticket.descripcion = escapeHtml(ticket.descripcion);
+    ticket.estado = escapeHtml(ticket.estado);
+
     const params = {
       TableName: "ticket",
       Key: { id: ticket.id },
@@ -91,10 +96,10 @@ export const updateTicketDB = async (ticket) => {
       ReturnValues: "ALL_NEW"
     };
     const result = await docClient.send(new UpdateCommand(params));
-    log.success(`✅ updateTicketDB: Ticket actualizado ID ${ticket.id}`);
+    log.success(`updateTicketDB: Ticket actualizado ID ${ticket.id}`);
     return result.Attributes;
   } catch (error) {
-    log.error("❌ Error en updateTicketDB:", error);
+    log.error("Error en updateTicketDB:", error);
     throw error;
   }
 };

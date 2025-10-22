@@ -1,10 +1,7 @@
-// utils/logger.js
+//-Utilidad de logging con colores
 import chalk from 'chalk';
 
-/**
- * Logger estilizado para consola
- * Permite mostrar mensajes con diferentes niveles (info, warn, error, success)
- */
+
 const log = {
   info: (...msgs) => console.log(`${chalk.blue('[INFO]:')}`, ...msgs),
   success: (...msgs) => console.log(`${chalk.green('[OK]:')}`, ...msgs),

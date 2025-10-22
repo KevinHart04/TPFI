@@ -1,12 +1,10 @@
-/**
- * auth.service.js
- * Servicios relacionados con autenticación de clientes
- */
+// [+] Lógica de autenticación y registro de clientes
 
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from "uuid";
 import { getClienteByContacto, addCliente, resetClientePassword } from "./dynamo.service.js";
-import log from "../utils/logger.js"; // Asegúrate que esta línea esté presente
+import { escapeHtml } from "../utils/sanitizer.js"; // Import the sanitizer
+import log from "../utils/logger.js";
 
 /**
  * Validar login de cliente
@@ -14,51 +12,57 @@ import log from "../utils/logger.js"; // Asegúrate que esta línea esté presen
  * @param {string} password - contraseña en texto plano
  * @returns {Promise<Object|null>} Retorna el cliente si ok, o null si falla
  */
+
 export const validarLogin = async (contacto, password) => {
     const cliente = await getClienteByContacto(contacto);
-    // Si no se encontró el cliente o no tiene una contraseña guardada, fallamos.
+    // Chequeamos si el cliente existe, o su contraseña está vacía
     if (!cliente || !cliente.password) return null;
 
-    // 1. Verificamos si la contraseña coincide en texto plano (para usuarios legacy)
+    // Si conincide la contraseña en texto plano, se alerta.
     if (cliente.password === password) {
         log.warn(`Login exitoso con contraseña en texto plano para ${contacto}. Se recomienda actualizar a hash.`);
-        return cliente; // Login exitoso para usuario antiguo
+        return cliente;
     }
 
-    // 2. Si no, intentamos comparar con bcrypt (para usuarios con contraseña hasheada)
+    // Si la contraseña está hasheada, comparamos con bcrypt
     const ok = await bcrypt.compare(password, cliente.password);
     return ok ? cliente : null;
 };
 
 /**
  * Registrar un nuevo cliente
- * @param {Object} cliente - { contacto, password, fecha_registro }
+ * @param {Object} cliente - { Nombre, contacto, password, fecha_registro }
  * @returns {Promise<Object>} Cliente creado
  */
 export const registrarClienteService = async (cliente) => {
-    // Generar ID único
+  // Se sanitizan los inputs para prevenir XSS
+  cliente.nombre = escapeHtml(cliente.nombre);
+  cliente.contacto = escapeHtml(cliente.contacto);
+  
+  // Generar un UUID para el nuevo cliente
     cliente.id = uuidv4();
 
     // Establecer valores por defecto
     cliente.fecha_alta = new Date().toISOString();
     cliente.activo = true;
     cliente.registrado = true;
-    cliente.fecha_ultimo_ingreso = null; // Se establecerá en el primer login
+    cliente.fecha_ultimo_ingreso = null; // Se actualizará al hacer login
 
     // Hashear contraseña
     cliente.password = await bcrypt.hash(cliente.password, 10);
-    return await addCliente(cliente); // tu función de DynamoService
+    return await addCliente(cliente);
 };
 
 export const resetPasswordService = async (contacto, password) => {
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  // Primero, encontramos al cliente para obtener su ID
+  // Buscamos el cliente por contacto
   const cliente = await getClienteByContacto(contacto);
   if (!cliente) {
+    log.warn(`Intento de reset fallido: ${contacto} no existe.`);
     throw new Error("Cliente no encontrado para resetear contraseña.");
   }
 
-  // Ahora, usamos la función correcta del servicio de DynamoDB con el ID
+  const passwordHash = await bcrypt.hash(password, 10);
+
+
   return await resetClientePassword(cliente.id, passwordHash);
 };

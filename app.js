@@ -1,8 +1,4 @@
-/**
- * app.js
- * Configuración principal de la app Express
- * TP Mesa de Ayuda - Backend modular
- */
+//Configuración de la aplicación Express
 
 import express from "express";
 import path from "path";
@@ -11,31 +7,21 @@ import ticketsRoutes from "./routes/tickets.routes.js";
 
 const app = express();
 
-// -----------------------------------------------------------------------------
-// 1️⃣ Middlewares para parsear JSON y formularios
-// -----------------------------------------------------------------------------
+//-Json y Form Parser middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// -----------------------------------------------------------------------------
-// 2️⃣ Servir archivos estáticos del frontend
-// -----------------------------------------------------------------------------
+//-Sirve archivos estáticos desde la carpeta "public"
 app.use(express.static(path.join('.', 'public')));
 
-// -----------------------------------------------------------------------------
-// 3️⃣ Rutas de API
-// -----------------------------------------------------------------------------
+//- Rutas de la API
 app.use("/clientes", clientesRoutes);  // login, registro, reset password
 app.use("/tickets", ticketsRoutes);    // listar tickets, crear tickets, etc.
 
-// -----------------------------------------------------------------------------
-// 4️⃣ Ruta por defecto (opcional) para ir a index.html
-// -----------------------------------------------------------------------------
+//-Ruta para servir el archivo loginClient.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join('.', 'public', 'index.html'));
+  res.sendFile(path.join('.', 'public', 'loginClient.html'));
 });
 
-// -----------------------------------------------------------------------------
-// 5️⃣ Exportar app para server.js o pruebas
-// -----------------------------------------------------------------------------
+//-Exportar la aplicación para usar en server.js
 export default app;

@@ -1,25 +1,11 @@
-/**********************************************************************************************
- * DynamoService.js — Capa de acceso a AWS DynamoDB
- * --------------------------------------------------------------------------------------------
- * UADER - FCyT - Ingeniería de Software I
- * Adaptación 2025: Mesa de Ayuda
- *
- * Funciones para:
- *  - Obtener cliente por contacto o ID
- *  - Crear cliente
- *  - Actualizar cliente
- *  - Resetear contraseña
- *  - Obtener tickets por cliente
- *
- * Logs incluidos para verificar conexión y operaciones.
- **********************************************************************************************/
+// [+] Capa de servicio para interactuar con AWS DynamoDB
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import 'dotenv/config'; // Carga las variables de entorno desde .env
 import log from '../utils/logger.js';
 
-// -------------------------------- Configuración de AWS DynamoDB --------------------------------
+//- Configuración del cliente de DynamoDB
 const client = new DynamoDBClient({
   // Usa las variables de entorno, con valores por defecto si no están definidas
   region: process.env.AWS_REGION || "us-east-1",
@@ -33,23 +19,26 @@ const client = new DynamoDBClient({
 const marshallOptions = { removeUndefinedValues: true };
 const translateConfig = { marshallOptions };
 
-// DocumentClient para trabajar con objetos JS nativos
+// Traduce el cliente de bajo nivel a uno de más alto nivel
 export const docClient = DynamoDBDocumentClient.from(client, translateConfig);
 log.info("DynamoService: DynamoDB configurado correctamente.");
 
 // -------------------------------- Funciones de Cliente ----------------------------------------
 
 export async function getClienteByContacto(contacto) {
+  // Mediante un Scan buscamos el cliente por su contacto (email)
   try {
     const params = {
       TableName: "cliente",
       FilterExpression: "contacto = :c",
       ExpressionAttributeValues: { ":c": contacto }
     };
+
+    // Usa scannCommand para buscar, ya que contacto no es key primaria
     const result = await docClient.send(new ScanCommand(params));
     log.info(`getClienteByContacto: encontrados ${result.Items.length} cliente(s) para ${contacto}`);
     
-
+      // Retorna el primer cliente encontrado o null
     return result.Items.length > 0 ? result.Items[0] : null;
   } catch (error) {
     log.error("Error en getClienteByContacto:", error);
@@ -77,7 +66,7 @@ export async function addCliente(cliente) {
     const params = {
       TableName: "cliente",
       Item: cliente,
-      ConditionExpression: 'attribute_not_exists(contacto)'
+      ConditionExpression: 'attribute_not_exists(contacto)' // Evita duplicados por contacto
     };
     await docClient.send(new PutCommand(params));
     log.success(`addCliente: Cliente creado correctamente: ${cliente.contacto}`);
@@ -93,20 +82,20 @@ export async function updateCliente(cliente) {
     const params = {
       TableName: "cliente",
       Key: { contacto: cliente.contacto },
-      UpdateExpression: "SET #n = :n, #p = :p, #a = :a, #r = :r",
+      UpdateExpression: "SET #n = :n, #p = :p, #a = :a, #r = :r", // Parametros a actualizar
       ExpressionAttributeNames: {
         "#n": "nombre",
-        "#p": "password",
+        "#p": "password",                                         // Nombres de atributo reservados
         "#a": "activo",
         "#r": "registrado"
       },
       ExpressionAttributeValues: {
         ":n": cliente.nombre,
-        ":p": cliente.password,
+        ":p": cliente.password,                                   // Valores nuevos
         ":a": cliente.activo === true,
         ":r": cliente.registrado === true
       },
-      ReturnValues: "ALL_NEW"
+      ReturnValues: "ALL_NEW"                                     // Retorna el item actualizado, no solo un status
     };
     const data = await docClient.send(new UpdateCommand(params));
     log.success(`updateCliente: Cliente actualizado: ${cliente.contacto}`);
@@ -118,6 +107,7 @@ export async function updateCliente(cliente) {
 }
 
 export async function resetClientePassword(id, newPassword) {
+  // Recibe id del cliente y nueva contraseña hasheada
   try {
     const params = {
       TableName: "cliente",
@@ -159,6 +149,8 @@ export async function updateClienteLastLogin(id, fecha) {
     throw error;
   }
 }
+
+//! SOLO PARA TESTEO: Escanea y devuelve todos los clientes
 /**
  * Escanea y devuelve todos los items de una tabla específica.
  * @param {string} tableName - El nombre de la tabla a escanear.

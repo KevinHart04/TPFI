@@ -12,6 +12,20 @@
  **********************************************************************************************/
 
 /*---------------------------------------------------------------------------------------------
+    0️⃣  Función auxiliar para escapar HTML (prevención de XSS)
+---------------------------------------------------------------------------------------------*/
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+/*---------------------------------------------------------------------------------------------
     1️⃣  Recuperar datos del usuario autenticado desde sessionStorage
 ---------------------------------------------------------------------------------------------*/
 
@@ -48,9 +62,9 @@ function mostrarInfoUsuario() {
     }
     
     tituloUsuario.innerHTML = `
-      <strong>Usuario:</strong> ${nombre} (${contacto})<br>
-      <strong>ID Cliente:</strong> ${id_cliente}<br> <!-- 🔹 NUEVO: mostramos el ID -->
-      <strong>Último ingreso:</strong> ${fecha_ultimo_ingreso}
+      <strong>Usuario:</strong> ${escapeHtml(nombre)} (${escapeHtml(contacto)})<br>
+      <strong>ID Cliente:</strong> ${escapeHtml(id_cliente)}<br> <!-- 🔹 NUEVO: mostramos el ID -->
+      <strong>Último ingreso:</strong> ${escapeHtml(fecha_ultimo_ingreso)}
     `;
 }
 
@@ -95,11 +109,11 @@ async function obtenerTickets() {
         data.data.forEach(ticket => {
             const fila = document.createElement("tr");
             fila.innerHTML = `
-                <td>${nombre}</td>
-                <td>${ticket.id}</td>
-                <td>${ticket.descripcion}</td>
-                <td>${ticket.solucion ? "Resuelto" : "Pendiente"}</td>
-                <td>${ticket.fecha_apertura}</td>
+                <td>${escapeHtml(nombre)}</td>
+                <td>${escapeHtml(ticket.id)}</td>
+                <td>${escapeHtml(ticket.descripcion)}</td>
+                <td>${escapeHtml(ticket.solucion ? "Resuelto" : "Pendiente")}</td>
+                <td>${escapeHtml(ticket.fecha_apertura)}</td>
             `;
             tbody.appendChild(fila);
         });
