@@ -95,7 +95,7 @@ formE1.addEventListener('submit', (event) => {
         // Redirigir a la pantalla de tickets
         window.location.href = './listarTicket.html';
       } else {
-        mostrarMensaje('Error de login, intente nuevamente.', 'RED');
+        mostrarMensaje('Usuario o contraseña incorrectos. Intente nuevamente', 'RED');
       }
     })
     .catch((err) => {
