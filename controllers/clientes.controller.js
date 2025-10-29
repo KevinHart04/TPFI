@@ -65,7 +65,7 @@ export const registrarCliente = async (req, res) => {
         res.json({ response: "OK", data: creado });
     } catch (error) {
         if (error.message === "Cliente ya existe") {
-            return res.status(400).json({ response: "ERROR", message: "El correo electrónico ya está registrado." });
+            return res.status(400).json({ response: "ERROR", message: "Este cliente ya esta registrado. Intente nuevamente" });
         }
         log.error("Error en registrarCliente:", error);
         res.status(500).json({ response: "ERROR", message: "Error interno del servidor" });
