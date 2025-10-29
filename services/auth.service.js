@@ -35,6 +35,13 @@ export const validarLogin = async (contacto, password) => {
  * @returns {Promise<Object>} Cliente creado
  */
 export const registrarClienteService = async (cliente) => {
+  // [+] PASO 1: Verificar si el cliente ya existe
+  const clienteExistente = await getClienteByContacto(cliente.contacto);
+  if (clienteExistente) {
+    log.warn(`Intento de registro fallido: el contacto ${cliente.contacto} ya existe.`);
+    throw new Error("Cliente ya existe");
+  }
+
   // Se sanitizan los inputs para prevenir XSS
   cliente.nombre = escapeHtml(cliente.nombre);
   cliente.contacto = escapeHtml(cliente.contacto);
