@@ -32,7 +32,7 @@ formE1.addEventListener('submit', (event) => {
   }
 
 //-Definir el modo de operación y la API correspondiente
-  const MODE = 'LOCAL'; // Cambiar a 'AWS' o 'TYPICODE' según el entorno
+  const MODE = 'LOCAL'; //todo: Cambiar a 'AWS' o 'TYPICODE' según el entorno
 
   const RESTAPI = {
     loginCliente: 'http://localhost:3000/clientes/login',
@@ -47,6 +47,8 @@ formE1.addEventListener('submit', (event) => {
 
 //-configurar la solicitud según el modo
   if (MODE === 'LOCAL') {
+    // *Se usa POST para enviar datos sensibles (usuario/contraseña) de forma segura en el cuerpo de la petición.
+    // !No se usa GET porque expondría la contraseña en la URL, lo cual es inseguro.
     API = RESTAPI.loginCliente;
     APIoptions = {
       method: 'POST',
@@ -59,12 +61,16 @@ formE1.addEventListener('submit', (event) => {
   }
 
   if (MODE === 'TYPICODE') {
+    // *Se usa GET porque se está consultando una API de prueba que espera el ID en la URL para devolver un recurso.
+    // !No se usa POST porque esta API de prueba no está diseñada para recibir datos, solo para entregar información.
     console.log('🌐 Modo TYPICODE: usando API JSON falsa');
     API = TYPICODE_API + data.contacto; // O un ID si el profe lo requiere
     APIoptions = { method: 'GET' };
   }
 
   if (MODE === 'AWS') {
+    // *Se usa GET porque el endpoint de AWS Lambda fue programado para recibir los datos directamente en la URL.
+    // !No se usa POST porque la función Lambda no está configurada para leer datos del cuerpo de una petición POST.
     console.log('🌐 Modo AWS: usando Lambda');
     API = `${AWS_API}?ID=${data.contacto}&PASSWORD=${data.password}`;
     APIoptions = { method: 'GET' };

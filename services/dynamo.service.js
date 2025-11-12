@@ -50,17 +50,24 @@ export async function getClienteByContacto(contacto) {
       ExpressionAttributeValues: { ":c": contacto }
     };
 
-    // Usa scannCommand para buscar, ya que contacto no es key primaria
+    // ?Usa scannCommand para buscar, ya que contacto no es key primaria.
+
+    // *La base de datos (DynamoDB) devuelve un objeto con una lista `Items`. Esta lista contendrá TODOS los clientes que coincidan con el email.
+
     const result = await docClient.send(new ScanCommand(params));
     log.info(`getClienteByContacto: encontrados ${result.Items.length} cliente(s) para ${contacto}`);
     
-      // Retorna el primer cliente encontrado o null
     return result.Items.length > 0 ? result.Items[0] : null;
   } catch (error) {
     log.error("Error en getClienteByContacto:", error);
     throw error;
   }
 }
+// *- Si `result.Items` tiene uno o más clientes, la expresión `result.Items.length > 0` es verdadera.
+//   !En este caso, devolvemos solo el primer cliente de la lista (`result.Items[0]`).
+
+// *- Si `result.Items` es una lista vacía (ningún cliente encontrado), la expresión es falsa.
+//   !En este caso, devolvemos `null`.
 
 export async function getClienteById(id) {
   try {
